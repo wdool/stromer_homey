@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Light !{{is|is not}} on"
+  },
+  "hint": {
+    "en": "Check if the bike's light is currently on."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

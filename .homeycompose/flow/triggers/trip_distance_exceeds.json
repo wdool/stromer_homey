@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "Trip distance exceeds"
+  },
+  "titleFormatted": {
+    "en": "Trip distance exceeds [[distance]] km"
+  },
+  "hint": {
+    "en": "Triggers when the trip distance exceeds the specified value."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    },
+    {
+      "type": "number",
+      "name": "distance",
+      "min": 0,
+      "max": 1000,
+      "step": 1,
+      "placeholder": {
+        "en": "Distance in km"
+      }
+    }
+  ]
+}

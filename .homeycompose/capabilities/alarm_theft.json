@@ -1,0 +1,24 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Theft Alarm",
+    "nl": "Diefstal Alarm"
+  },
+  "desc": {
+    "en": "Indicates whether the bike's theft alarm is active",
+    "nl": "Geeft aan of het fiets diefstal alarm actief is"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "insightsTitleTrue": {
+    "en": "Theft alarm activated",
+    "nl": "Diefstal alarm geactiveerd"
+  },
+  "insightsTitleFalse": {
+    "en": "Theft alarm deactivated",
+    "nl": "Diefstal alarm gedeactiveerd"
+  },
+  "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.svg"
+}

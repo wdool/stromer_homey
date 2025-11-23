@@ -1,0 +1,16 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Week Distance"
+  },
+  "units": {
+    "en": "km"
+  },
+  "decimals": 2,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "min": 0,
+  "insights": true,
+  "chartType": "stepLine"
+}

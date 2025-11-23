@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Average Speed (Trip)"
+  },
+  "units": {
+    "en": "km/h"
+  },
+  "decimals": 1,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "min": 0,
+  "insights": true,
+  "chartType": "spline",
+  "icon": "/drivers/stromer-bike/assets/icons/04-average-speed-trip.svg"
+}

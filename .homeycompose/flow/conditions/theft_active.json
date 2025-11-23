@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Theft alarm !{{is|is not}} active"
+  },
+  "hint": {
+    "en": "Check if the bike's theft alarm is currently active."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

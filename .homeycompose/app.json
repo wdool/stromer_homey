@@ -1,0 +1,52 @@
+{
+  "id": "com.stromer.bike",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "name": {
+    "en": "Stromer"
+  },
+  "description": {
+    "en": "Connect your Stromer e-bike to Homey"
+  },
+  "category": [
+    "energy"
+  ],
+  "tags": {
+    "en": [
+      "stromer",
+      "e-bike",
+      "bicycle",
+      "bike",
+      "electric bike",
+      "battery",
+      "tracking"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "brandColor": "#000000",
+  "author": {
+    "name": "Wout van den Dool",
+    "email": "woutdool@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Wout van den Dool",
+        "email": "woutdool@gmail.com"
+      }
+    ]
+  },
+  "support": "https://github.com/wdool/stromer_homey/issues",
+  "homeyCommunityTopicId": 145791,
+  "source": "https://github.com/wdool/stromer_homey"
+}

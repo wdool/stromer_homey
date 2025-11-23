@@ -1,0 +1,277 @@
+{
+  "name": {
+    "en": "Stromer Bike"
+  },
+  "class": "other",
+  "energy": {
+    "batteries": [
+      "INTERNAL"
+    ]
+  },
+  "capabilities": [
+    "stromer_state_of_charge",
+    "stromer_battery_health",
+    "stromer_trip_distance",
+    "stromer_average_speed_trip",
+    "stromer_motor_temp_c",
+    "stromer_battery_temp_c",
+    "stromer_user_total_distance",
+    "stromer_distance_total",
+    "stromer_distance_avg_speed",
+    "stromer_avg_energy",
+    "stromer_power_cycles",
+    "stromer_total_energy_consumption",
+    "stromer_location",
+    "alarm_theft",
+    "measure_battery",
+    "onoff",
+    "locked"
+  ],
+  "capabilitiesOptions": {
+    "stromer_battery_health": {
+      "icon": "/drivers/stromer-bike/assets/icons/02-battery-health.svg"
+    },
+    "stromer_trip_distance": {
+      "icon": "/drivers/stromer-bike/assets/icons/03-trip-distance.svg"
+    },
+    "stromer_average_speed_trip": {
+      "icon": "/drivers/stromer-bike/assets/icons/04-average-speed-trip.svg"
+    },
+    "stromer_motor_temp_c": {
+      "icon": "/drivers/stromer-bike/assets/icons/05-motor-temperature.svg"
+    },
+    "stromer_battery_temp_c": {
+      "icon": "/drivers/stromer-bike/assets/icons/06-battery-temp.svg"
+    },
+    "stromer_user_total_distance": {
+      "icon": "/drivers/stromer-bike/assets/icons/07-user-total-distance.svg"
+    },
+    "stromer_distance_total": {
+      "icon": "/drivers/stromer-bike/assets/icons/08-bike-total-distance.svg"
+    },
+    "stromer_distance_avg_speed": {
+      "icon": "/drivers/stromer-bike/assets/icons/09-bike-distance-average-speed.svg"
+    },
+    "stromer_avg_energy": {
+      "icon": "/drivers/stromer-bike/assets/icons/10-average-energy-consumption.svg"
+    },
+    "stromer_power_cycles": {
+      "icon": "/drivers/stromer-bike/assets/icons/11-power-cycles.svg"
+    },
+    "stromer_total_energy_consumption": {
+      "icon": "/drivers/stromer-bike/assets/icons/12-total-energy-consumption.svg"
+    },
+    "stromer_location": {
+      "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
+    },
+    "alarm_theft": {
+      "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.png"
+    },
+    "onoff": {
+      "title": {
+        "en": "Light"
+      }
+    },
+    "locked": {
+      "title": {
+        "en": "Lock"
+      }
+    }
+  },
+  "images": {
+    "small": "/drivers/stromer-bike/assets/images/small.png",
+    "large": "/drivers/stromer-bike/assets/images/large.png",
+    "xlarge": "/drivers/stromer-bike/assets/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "repair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Polling Settings"
+      },
+      "children": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Default Polling Interval (minutes)"
+          },
+          "value": 10,
+          "min": 1,
+          "max": 60,
+          "hint": {
+            "en": "How often to check bike status when inactive (1-60 minutes)"
+          }
+        },
+        {
+          "id": "active_poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Active Polling Interval (seconds)"
+          },
+          "value": 30,
+          "min": 10,
+          "max": 300,
+          "hint": {
+            "en": "How often to check bike status when active/unlocked (10-300 seconds)"
+          }
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Distance Baselines"
+      },
+      "children": [
+        {
+          "id": "user_total_baseline",
+          "type": "number",
+          "label": {
+            "en": "Lifetime Total Distance (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Your total lifetime distance from Stromer app"
+          }
+        },
+        {
+          "id": "odometer_baseline",
+          "type": "number",
+          "label": {
+            "en": "Bike Odometer at Baseline (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Current bike odometer reading (Total Distance)"
+          }
+        },
+        {
+          "id": "year_baseline",
+          "type": "number",
+          "label": {
+            "en": "Year Start Distance (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Auto-resets January 1st"
+          }
+        },
+        {
+          "id": "month_baseline",
+          "type": "number",
+          "label": {
+            "en": "Month Start Distance (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Auto-resets 1st of month"
+          }
+        },
+        {
+          "id": "week_baseline",
+          "type": "number",
+          "label": {
+            "en": "Week Start Distance (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Auto-resets Monday"
+          }
+        },
+        {
+          "id": "day_baseline",
+          "type": "number",
+          "label": {
+            "en": "Day Start Distance (km)"
+          },
+          "value": 0,
+          "min": 0,
+          "hint": {
+            "en": "Auto-resets at midnight"
+          }
+        },
+        {
+          "id": "year_date",
+          "type": "label",
+          "label": {
+            "en": "Year Reset Date"
+          },
+          "value": "-"
+        },
+        {
+          "id": "month_date",
+          "type": "label",
+          "label": {
+            "en": "Month Reset Date"
+          },
+          "value": "-"
+        },
+        {
+          "id": "week_date",
+          "type": "label",
+          "label": {
+            "en": "Week Reset Date"
+          },
+          "value": "-"
+        },
+        {
+          "id": "day_date",
+          "type": "label",
+          "label": {
+            "en": "Day Reset Date"
+          },
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Bike Information"
+      },
+      "children": [
+        {
+          "id": "bike_id",
+          "type": "label",
+          "label": {
+            "en": "Bike ID"
+          },
+          "value": "-"
+        },
+        {
+          "id": "bike_nickname",
+          "type": "label",
+          "label": {
+            "en": "Bike Name"
+          },
+          "value": "-"
+        }
+      ]
+    }
+  ]
+}

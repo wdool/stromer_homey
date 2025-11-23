@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "User Total Distance"
+  },
+  "desc": {
+    "en": "Your total distance calculated from baseline. Configure baseline values in device settings under 'Distance Baselines'."
+  },
+  "units": {
+    "en": "km"
+  },
+  "decimals": 1,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "icon": "/drivers/stromer-bike/assets/icons/07-user-total-distance.svg"
+}

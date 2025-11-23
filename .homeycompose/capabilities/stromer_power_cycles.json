@@ -1,0 +1,11 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Power Cycles"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "icon": "/drivers/stromer-bike/assets/icons/11-power-cycles.svg"
+}

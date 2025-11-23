@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Lock bike"
+  },
+  "hint": {
+    "en": "Lock the bike remotely."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Battery Health"
+  },
+  "units": {
+    "en": "%"
+  },
+  "decimals": 1,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "min": 0,
+  "max": 100,
+  "insights": true,
+  "chartType": "spline",
+  "icon": "/drivers/stromer-bike/assets/icons/02-battery-health.svg"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Assistance Level"
+  },
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "min": 0,
+  "max": 3,
+  "insights": true,
+  "chartType": "stepLine"
+}

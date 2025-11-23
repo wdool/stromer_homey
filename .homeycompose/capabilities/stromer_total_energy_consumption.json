@@ -1,0 +1,15 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Total Energy Consumption"
+  },
+  "units": {
+    "en": "Wh"
+  },
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "icon": "/drivers/stromer-bike/assets/icons/12-total-energy-consumption.svg"
+}
