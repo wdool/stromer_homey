@@ -1,0 +1,28 @@
+{
+  "title": {
+    "en": "Trip average speed exceeds"
+  },
+  "titleFormatted": {
+    "en": "Trip average speed exceeds [[speed]] km/h"
+  },
+  "hint": {
+    "en": "Triggers when the trip average speed exceeds the specified value."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    },
+    {
+      "type": "number",
+      "name": "speed",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "placeholder": {
+        "en": "Speed in km/h"
+      }
+    }
+  ]
+}

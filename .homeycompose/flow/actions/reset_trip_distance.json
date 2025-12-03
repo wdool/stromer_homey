@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Reset trip distance"
+  },
+  "hint": {
+    "en": "Reset the trip distance counter to zero."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

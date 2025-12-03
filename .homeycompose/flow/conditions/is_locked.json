@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Bike !{{is|is not}} locked"
+  },
+  "hint": {
+    "en": "Check if the bike is currently locked."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

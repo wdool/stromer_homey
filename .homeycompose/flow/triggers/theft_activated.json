@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Theft alarm activated"
+  },
+  "hint": {
+    "en": "Triggers when the bike's theft alarm is activated."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

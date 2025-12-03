@@ -1,0 +1,54 @@
+{
+  "title": {
+    "en": "Temperature !{{is|is not}} in range"
+  },
+  "titleFormatted": {
+    "en": "[[sensor]] temperature !{{is|is not}} between [[min]]°C and [[max]]°C"
+  },
+  "hint": {
+    "en": "Check if motor or battery temperature is within the specified range."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    },
+    {
+      "type": "dropdown",
+      "name": "sensor",
+      "values": [
+        {
+          "id": "motor",
+          "label": {
+            "en": "Motor"
+          }
+        },
+        {
+          "id": "battery",
+          "label": {
+            "en": "Battery"
+          }
+        }
+      ]
+    },
+    {
+      "type": "number",
+      "name": "min",
+      "min": -20,
+      "max": 100,
+      "placeholder": {
+        "en": "Minimum temperature"
+      }
+    },
+    {
+      "type": "number",
+      "name": "max",
+      "min": -20,
+      "max": 100,
+      "placeholder": {
+        "en": "Maximum temperature"
+      }
+    }
+  ]
+}

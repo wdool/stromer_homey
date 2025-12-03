@@ -1,0 +1,1079 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "com.stromer.bike",
+  "version": "1.0.3",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Stromer"
+  },
+  "description": {
+    "en": "Connect your Stromer e-bike to Homey"
+  },
+  "category": [
+    "appliances"
+  ],
+  "tags": {
+    "en": [
+      "stromer",
+      "e-bike",
+      "bicycle",
+      "bike",
+      "electric bike",
+      "battery",
+      "tracking"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "brandColor": "#000000",
+  "author": {
+    "name": "Wout van den Dool",
+    "email": "woutdool@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Wout van den Dool",
+        "email": "woutdool@gmail.com"
+      }
+    ]
+  },
+  "support": "https://github.com/wdool/stromer_homey/issues",
+  "homeyCommunityTopicId": 145791,
+  "source": "https://github.com/wdool/stromer_homey",
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Battery health drops below"
+        },
+        "titleFormatted": {
+          "en": "Battery health drops below [[threshold]]%"
+        },
+        "hint": {
+          "en": "Triggers when the bike's battery health drops below the specified threshold."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "range",
+            "name": "threshold",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "label": {
+              "en": "Threshold"
+            },
+            "labelMultiplier": 1,
+            "labelDecimals": 0
+          }
+        ],
+        "id": "battery_health_low"
+      },
+      {
+        "title": {
+          "en": "Battery level drops below"
+        },
+        "titleFormatted": {
+          "en": "Battery level drops below [[threshold]]%"
+        },
+        "hint": {
+          "en": "Triggers when the bike's battery level drops below the specified threshold."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "range",
+            "name": "threshold",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "label": {
+              "en": "Threshold"
+            },
+            "labelMultiplier": 1,
+            "labelDecimals": 0
+          }
+        ],
+        "id": "battery_low"
+      },
+      {
+        "title": {
+          "en": "Bike was unlocked"
+        },
+        "hint": {
+          "en": "Triggers when the bike is unlocked."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "bike_unlocked"
+      },
+      {
+        "title": {
+          "en": "Theft alarm activated"
+        },
+        "hint": {
+          "en": "Triggers when the bike's theft alarm is activated."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "theft_activated"
+      },
+      {
+        "title": {
+          "en": "Trip distance exceeds"
+        },
+        "titleFormatted": {
+          "en": "Trip distance exceeds [[distance]] km"
+        },
+        "hint": {
+          "en": "Triggers when the trip distance exceeds the specified value."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "number",
+            "name": "distance",
+            "min": 0,
+            "max": 1000,
+            "step": 1,
+            "placeholder": {
+              "en": "Distance in km"
+            }
+          }
+        ],
+        "id": "trip_distance_exceeds"
+      },
+      {
+        "title": {
+          "en": "Trip average speed exceeds"
+        },
+        "titleFormatted": {
+          "en": "Trip average speed exceeds [[speed]] km/h"
+        },
+        "hint": {
+          "en": "Triggers when the trip average speed exceeds the specified value."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "placeholder": {
+              "en": "Speed in km/h"
+            }
+          }
+        ],
+        "id": "trip_speed_exceeds"
+      }
+    ],
+    "conditions": [
+      {
+        "title": {
+          "en": "Battery level !{{is|is not}} above"
+        },
+        "titleFormatted": {
+          "en": "Battery level !{{is|is not}} above [[threshold]]%"
+        },
+        "hint": {
+          "en": "Check if the bike's battery level is above the specified threshold."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "range",
+            "name": "threshold",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "label": {
+              "en": "Threshold"
+            },
+            "labelMultiplier": 1,
+            "labelDecimals": 0
+          }
+        ],
+        "id": "battery_above"
+      },
+      {
+        "title": {
+          "en": "Battery health !{{is|is not}} above"
+        },
+        "titleFormatted": {
+          "en": "Battery health !{{is|is not}} above [[threshold]]%"
+        },
+        "hint": {
+          "en": "Check if the bike's battery health is above the specified threshold."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "range",
+            "name": "threshold",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "label": {
+              "en": "Threshold"
+            },
+            "labelMultiplier": 1,
+            "labelDecimals": 0
+          }
+        ],
+        "id": "battery_health_above"
+      },
+      {
+        "title": {
+          "en": "Bike !{{is|is not}} locked"
+        },
+        "hint": {
+          "en": "Check if the bike is currently locked."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "is_locked"
+      },
+      {
+        "title": {
+          "en": "Light !{{is|is not}} on"
+        },
+        "hint": {
+          "en": "Check if the bike's light is currently on."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "light_on"
+      },
+      {
+        "title": {
+          "en": "Temperature !{{is|is not}} in range"
+        },
+        "titleFormatted": {
+          "en": "[[sensor]] temperature !{{is|is not}} between [[min]]°C and [[max]]°C"
+        },
+        "hint": {
+          "en": "Check if motor or battery temperature is within the specified range."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "dropdown",
+            "name": "sensor",
+            "values": [
+              {
+                "id": "motor",
+                "label": {
+                  "en": "Motor"
+                }
+              },
+              {
+                "id": "battery",
+                "label": {
+                  "en": "Battery"
+                }
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "name": "min",
+            "min": -20,
+            "max": 100,
+            "placeholder": {
+              "en": "Minimum temperature"
+            }
+          },
+          {
+            "type": "number",
+            "name": "max",
+            "min": -20,
+            "max": 100,
+            "placeholder": {
+              "en": "Maximum temperature"
+            }
+          }
+        ],
+        "id": "temp_in_range"
+      },
+      {
+        "title": {
+          "en": "Theft alarm !{{is|is not}} active"
+        },
+        "hint": {
+          "en": "Check if the bike's theft alarm is currently active."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "theft_active"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Lock bike"
+        },
+        "hint": {
+          "en": "Lock the bike remotely."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "lock_bike"
+      },
+      {
+        "title": {
+          "en": "Reset trip distance"
+        },
+        "hint": {
+          "en": "Reset the trip distance counter to zero."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "reset_trip_distance"
+      },
+      {
+        "title": {
+          "en": "Send bike status notification"
+        },
+        "hint": {
+          "en": "Send a notification with the current bike status (battery, trip distance, etc.)."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "send_bike_notification"
+      },
+      {
+        "title": {
+          "en": "Set light mode"
+        },
+        "titleFormatted": {
+          "en": "Set light to [[light_mode]]"
+        },
+        "hint": {
+          "en": "Control the bike's light."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          },
+          {
+            "type": "dropdown",
+            "name": "light_mode",
+            "values": [
+              {
+                "id": "off",
+                "label": {
+                  "en": "Off"
+                }
+              },
+              {
+                "id": "on",
+                "label": {
+                  "en": "On"
+                }
+              },
+              {
+                "id": "dim",
+                "label": {
+                  "en": "Dim"
+                }
+              },
+              {
+                "id": "bright",
+                "label": {
+                  "en": "Bright"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "toggle_light"
+      },
+      {
+        "title": {
+          "en": "Unlock bike"
+        },
+        "hint": {
+          "en": "Unlock the bike remotely."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "unlock_bike"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Stromer Bike"
+      },
+      "class": "other",
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
+      "capabilities": [
+        "stromer_state_of_charge",
+        "stromer_battery_health",
+        "stromer_trip_distance",
+        "stromer_average_speed_trip",
+        "stromer_motor_temp_c",
+        "stromer_battery_temp_c",
+        "stromer_user_total_distance",
+        "stromer_distance_total",
+        "stromer_distance_avg_speed",
+        "stromer_avg_energy",
+        "stromer_power_cycles",
+        "stromer_total_energy_consumption",
+        "stromer_location",
+        "alarm_theft",
+        "measure_battery",
+        "onoff",
+        "locked"
+      ],
+      "capabilitiesOptions": {
+        "stromer_battery_health": {
+          "icon": "/drivers/stromer-bike/assets/icons/02-battery-health.svg"
+        },
+        "stromer_trip_distance": {
+          "icon": "/drivers/stromer-bike/assets/icons/03-trip-distance.svg"
+        },
+        "stromer_average_speed_trip": {
+          "icon": "/drivers/stromer-bike/assets/icons/04-average-speed-trip.svg"
+        },
+        "stromer_motor_temp_c": {
+          "icon": "/drivers/stromer-bike/assets/icons/05-motor-temperature.svg"
+        },
+        "stromer_battery_temp_c": {
+          "icon": "/drivers/stromer-bike/assets/icons/06-battery-temp.svg"
+        },
+        "stromer_user_total_distance": {
+          "icon": "/drivers/stromer-bike/assets/icons/07-user-total-distance.svg"
+        },
+        "stromer_distance_total": {
+          "icon": "/drivers/stromer-bike/assets/icons/08-bike-total-distance.svg"
+        },
+        "stromer_distance_avg_speed": {
+          "icon": "/drivers/stromer-bike/assets/icons/09-bike-distance-average-speed.svg"
+        },
+        "stromer_avg_energy": {
+          "icon": "/drivers/stromer-bike/assets/icons/10-average-energy-consumption.svg"
+        },
+        "stromer_power_cycles": {
+          "icon": "/drivers/stromer-bike/assets/icons/11-power-cycles.svg"
+        },
+        "stromer_total_energy_consumption": {
+          "icon": "/drivers/stromer-bike/assets/icons/12-total-energy-consumption.svg"
+        },
+        "stromer_location": {
+          "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
+        },
+        "alarm_theft": {
+          "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.png"
+        },
+        "onoff": {
+          "title": {
+            "en": "Light"
+          }
+        },
+        "locked": {
+          "title": {
+            "en": "Lock"
+          }
+        }
+      },
+      "images": {
+        "small": "/drivers/stromer-bike/assets/images/small.png",
+        "large": "/drivers/stromer-bike/assets/images/large.png",
+        "xlarge": "/drivers/stromer-bike/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "repair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Polling Settings"
+          },
+          "children": [
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Default Polling Interval (minutes)"
+              },
+              "value": 10,
+              "min": 1,
+              "max": 60,
+              "hint": {
+                "en": "How often to check bike status when inactive (1-60 minutes)"
+              }
+            },
+            {
+              "id": "active_poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Active Polling Interval (seconds)"
+              },
+              "value": 30,
+              "min": 10,
+              "max": 300,
+              "hint": {
+                "en": "How often to check bike status when active/unlocked (10-300 seconds)"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Distance Baselines"
+          },
+          "children": [
+            {
+              "id": "user_total_baseline",
+              "type": "number",
+              "label": {
+                "en": "Lifetime Total Distance (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Your total lifetime distance from Stromer app"
+              }
+            },
+            {
+              "id": "odometer_baseline",
+              "type": "number",
+              "label": {
+                "en": "Bike Odometer at Baseline (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Current bike odometer reading (Total Distance)"
+              }
+            },
+            {
+              "id": "year_baseline",
+              "type": "number",
+              "label": {
+                "en": "Year Start Distance (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Auto-resets January 1st"
+              }
+            },
+            {
+              "id": "month_baseline",
+              "type": "number",
+              "label": {
+                "en": "Month Start Distance (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Auto-resets 1st of month"
+              }
+            },
+            {
+              "id": "week_baseline",
+              "type": "number",
+              "label": {
+                "en": "Week Start Distance (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Auto-resets Monday"
+              }
+            },
+            {
+              "id": "day_baseline",
+              "type": "number",
+              "label": {
+                "en": "Day Start Distance (km)"
+              },
+              "value": 0,
+              "min": 0,
+              "hint": {
+                "en": "Auto-resets at midnight"
+              }
+            },
+            {
+              "id": "year_date",
+              "type": "label",
+              "label": {
+                "en": "Year Reset Date"
+              },
+              "value": "-"
+            },
+            {
+              "id": "month_date",
+              "type": "label",
+              "label": {
+                "en": "Month Reset Date"
+              },
+              "value": "-"
+            },
+            {
+              "id": "week_date",
+              "type": "label",
+              "label": {
+                "en": "Week Reset Date"
+              },
+              "value": "-"
+            },
+            {
+              "id": "day_date",
+              "type": "label",
+              "label": {
+                "en": "Day Reset Date"
+              },
+              "value": "-"
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Bike Information"
+          },
+          "children": [
+            {
+              "id": "bike_id",
+              "type": "label",
+              "label": {
+                "en": "Bike ID"
+              },
+              "value": "-"
+            },
+            {
+              "id": "bike_nickname",
+              "type": "label",
+              "label": {
+                "en": "Bike Name"
+              },
+              "value": "-"
+            }
+          ]
+        }
+      ],
+      "id": "stromer-bike"
+    }
+  ],
+  "capabilities": {
+    "alarm_theft": {
+      "type": "boolean",
+      "title": {
+        "en": "Theft Alarm",
+        "nl": "Diefstal Alarm"
+      },
+      "desc": {
+        "en": "Indicates whether the bike's theft alarm is active",
+        "nl": "Geeft aan of het fiets diefstal alarm actief is"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Theft alarm activated",
+        "nl": "Diefstal alarm geactiveerd"
+      },
+      "insightsTitleFalse": {
+        "en": "Theft alarm deactivated",
+        "nl": "Diefstal alarm gedeactiveerd"
+      },
+      "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.svg"
+    },
+    "stromer_assistance_level": {
+      "type": "number",
+      "title": {
+        "en": "Assistance Level"
+      },
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "max": 3,
+      "insights": true,
+      "chartType": "stepLine"
+    },
+    "stromer_atmospheric_pressure": {
+      "type": "number",
+      "title": {
+        "en": "Atmospheric Pressure"
+      },
+      "units": {
+        "en": "hPa"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true
+    },
+    "stromer_average_speed_trip": {
+      "type": "number",
+      "title": {
+        "en": "Average Speed (Trip)"
+      },
+      "units": {
+        "en": "km/h"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/04-average-speed-trip.svg"
+    },
+    "stromer_avg_energy": {
+      "type": "number",
+      "title": {
+        "en": "Average Energy Consumption"
+      },
+      "units": {
+        "en": "Wh/km"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/10-average-energy-consumption.svg"
+    },
+    "stromer_battery_health": {
+      "type": "number",
+      "title": {
+        "en": "Battery Health"
+      },
+      "units": {
+        "en": "%"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "max": 100,
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/02-battery-health.svg"
+    },
+    "stromer_battery_temp_c": {
+      "type": "number",
+      "title": {
+        "en": "Battery Temperature"
+      },
+      "units": {
+        "en": "°C"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/06-battery-temp.svg"
+    },
+    "stromer_distance_avg_speed": {
+      "type": "number",
+      "title": {
+        "en": "Distance Average Speed"
+      },
+      "units": {
+        "en": "km/h"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/09-bike-distance-average-speed.svg"
+    },
+    "stromer_distance_total": {
+      "type": "number",
+      "title": {
+        "en": "Bike Total Distance"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "stepLine",
+      "icon": "/drivers/stromer-bike/assets/icons/08-bike-total-distance.svg"
+    },
+    "stromer_location": {
+      "type": "string",
+      "title": {
+        "en": "Location"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": false,
+      "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
+    },
+    "stromer_month_distance": {
+      "type": "number",
+      "title": {
+        "en": "Month Distance"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "stepLine"
+    },
+    "stromer_motor_temp_c": {
+      "type": "number",
+      "title": {
+        "en": "Motor Temperature"
+      },
+      "units": {
+        "en": "°C"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/05-motor-temperature.svg"
+    },
+    "stromer_power_cycles": {
+      "type": "number",
+      "title": {
+        "en": "Power Cycles"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "icon": "/drivers/stromer-bike/assets/icons/11-power-cycles.svg"
+    },
+    "stromer_state_of_charge": {
+      "type": "number",
+      "title": {
+        "en": "State of Charge"
+      },
+      "units": {
+        "en": "%"
+      },
+      "decimals": 0,
+      "min": 0,
+      "max": 100,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "icon": "/drivers/stromer-bike/assets/icons/01-state-of-charge.svg"
+    },
+    "stromer_total_energy_consumption": {
+      "type": "number",
+      "title": {
+        "en": "Total Energy Consumption"
+      },
+      "units": {
+        "en": "Wh"
+      },
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "icon": "/drivers/stromer-bike/assets/icons/12-total-energy-consumption.svg"
+    },
+    "stromer_trip_distance": {
+      "type": "number",
+      "title": {
+        "en": "Trip Distance"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "stepLine",
+      "icon": "/drivers/stromer-bike/assets/icons/03-trip-distance.svg"
+    },
+    "stromer_user_total_distance": {
+      "type": "number",
+      "title": {
+        "en": "User Total Distance"
+      },
+      "desc": {
+        "en": "Your total distance calculated from baseline. Configure baseline values in device settings under 'Distance Baselines'."
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 1,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "icon": "/drivers/stromer-bike/assets/icons/07-user-total-distance.svg"
+    },
+    "stromer_week_distance": {
+      "type": "number",
+      "title": {
+        "en": "Week Distance"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "stepLine"
+    },
+    "stromer_year_distance": {
+      "type": "number",
+      "title": {
+        "en": "Year Distance"
+      },
+      "units": {
+        "en": "km"
+      },
+      "decimals": 2,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "stepLine"
+    }
+  }
+}

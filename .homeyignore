@@ -1,0 +1,13 @@
+node_modules/
+.git/
+.vscode/
+.idea/
+*.log
+.DS_Store
+README.md
+docs/
+test/
+tests/
+*.test.js
+.env
+.env.local

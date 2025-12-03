@@ -1,0 +1,12 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 960'>
+<rect width='960' height='960' fill='none' fill-opacity='0'/>
+<circle cx='260' cy='640' r='150' fill='none' stroke='#000000' stroke-width='60'/>
+<circle cx='700' cy='640' r='150' fill='none' stroke='#000000' stroke-width='60'/>
+<circle cx='260' cy='640' r='55' fill='#000000'/>
+<path d='M250 400 L630 360 L630 400 L250 440 Z' fill='#000000'/>
+<path d='M630 360 L520 580 L480 650 L440 650 L520 420 Z' fill='#000000'/>
+<path d='M480 650 L300 640' stroke='#000000' stroke-width='60' fill='none' stroke-linecap='round'/>
+<path d='M630 360 L700 640' stroke='#000000' stroke-width='80' fill='none' stroke-linecap='round'/>
+<path d='M630 360 L750 300' stroke='#000000' stroke-width='60' fill='none' stroke-linecap='round'/>
+<path d='M300 380 L300 330' stroke='#000000' stroke-width='50' fill='none' stroke-linecap='round'/>
+</svg>

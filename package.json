@@ -1,0 +1,25 @@
+{
+  "name": "com.stromer.bike",
+  "version": "1.0.0",
+  "main": "app.js",
+  "description": "Connect your Stromer e-bike to Homey",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stromer",
+    "e-bike",
+    "bicycle",
+    "battery",
+    "tracking"
+  ],
+  "author": "Stromer Homey Integration",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/stromer-homey/support/issues"
+  },
+  "homepage": "https://github.com/stromer-homey/stromer-homey",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}

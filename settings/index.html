@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+    }
+    
+    fieldset {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    legend {
+      font-weight: 600;
+      font-size: 16px;
+      padding: 0 10px;
+    }
+    
+    .field {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+    
+    .hint {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stromer Bike Settings</h1>
+  <div style="text-align: right; color: #999; font-size: 12px; margin-bottom: 10px;">Version 1.0.0</div>
+  
+  <fieldset>
+    <legend>Stromer Account Credentials</legend>
+    
+    <div class="field">
+      <label for="stromer_email">Email</label>
+      <input id="stromer_email" type="text" placeholder="your@email.com" />
+      <div class="hint">Your Stromer account email address</div>
+    </div>
+    
+    <div class="field">
+      <label for="stromer_password">Password</label>
+      <input id="stromer_password" type="password" placeholder="Enter password or leave blank to keep existing" />
+      <div class="hint">
+        Your Stromer password (automatically cleared after successful authentication).
+        <label style="display: inline; font-weight: normal; margin-top: 5px;">
+          <input type="checkbox" id="clear_password" style="width: auto; margin-right: 5px;" />
+          Clear stored password
+        </label>
+      </div>
+    </div>
+    
+    <div class="field">
+      <label for="stromer_client_id">Client ID</label>
+      <input id="stromer_client_id" type="text" placeholder="4P3VE9rBYdueKQioWb7nv7RJDU8EQsn2wiQaNqhG" />
+      <div class="hint">Stromer API Client ID (see documentation for how to obtain via MITM)</div>
+    </div>
+  </fieldset>
+  
+  <div style="padding: 15px; background-color: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px; margin-bottom: 20px;">
+    <strong>📊 Distance Baselines</strong><br>
+    <span style="font-size: 13px;">Distance baselines are configured per bike in the device settings. Go to your paired bike device → Settings → Distance Baselines to configure year/month/week/day tracking.</span>
+  </div>
+  
+  <button id="save">Save Settings</button>
+  
+  <div id="status" class="status"></div>
+
+  <script type="text/javascript">
+    function onHomeyReady(Homey) {
+      Homey.ready();
+      
+      const emailEl = document.getElementById('stromer_email');
+      const passwordEl = document.getElementById('stromer_password');
+      const clientIdEl = document.getElementById('stromer_client_id');
+      const clearPasswordEl = document.getElementById('clear_password');
+      const saveEl = document.getElementById('save');
+      const statusEl = document.getElementById('status');
+      
+      function showStatus(message, type) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+        statusEl.style.display = 'block';
+        
+        setTimeout(() => {
+          statusEl.style.display = 'none';
+        }, 5000);
+      }
+      
+      Homey.get('stromer_email', (err, value) => {
+        if (!err && value) emailEl.value = value;
+      });
+      
+      Homey.get('stromer_client_id', (err, value) => {
+        if (!err && value) clientIdEl.value = value;
+      });
+      
+      saveEl.addEventListener('click', () => {
+        const email = emailEl.value.trim();
+        const password = passwordEl.value.trim();
+        const clientId = clientIdEl.value.trim();
+        const clearPassword = clearPasswordEl.checked;
+        
+        if (!email || !clientId) {
+          showStatus('Please enter both email and client ID', 'error');
+          return;
+        }
+        
+        saveEl.disabled = true;
+        saveEl.textContent = 'Saving...';
+        
+        const willUpdatePassword = password || clearPassword;
+        const itemsToSave = willUpdatePassword ? 3 : 2;
+        let saved = 0;
+        
+        function checkComplete() {
+          saved++;
+          if (saved === itemsToSave) {
+            saveEl.disabled = false;
+            saveEl.textContent = 'Save Settings';
+            
+            if (password) {
+              showStatus('Settings saved! The app will now authenticate with Stromer.', 'success');
+              passwordEl.value = '';
+              clearPasswordEl.checked = false;
+            } else if (clearPassword) {
+              showStatus('Password cleared successfully.', 'success');
+              passwordEl.value = '';
+              clearPasswordEl.checked = false;
+            } else {
+              showStatus('Settings updated successfully.', 'success');
+            }
+          }
+        }
+        
+        Homey.set('stromer_email', email, (err) => {
+          if (err) {
+            showStatus('Error saving settings: ' + err, 'error');
+            saveEl.disabled = false;
+            saveEl.textContent = 'Save Settings';
+            return;
+          }
+          checkComplete();
+        });
+        
+        Homey.set('stromer_client_id', clientId, (err) => {
+          if (err) {
+            showStatus('Error saving settings: ' + err, 'error');
+            saveEl.disabled = false;
+            saveEl.textContent = 'Save Settings';
+            return;
+          }
+          checkComplete();
+        });
+        
+        if (willUpdatePassword) {
+          const passwordValue = clearPassword ? '' : password;
+          Homey.set('stromer_password', passwordValue, (err) => {
+            if (err) {
+              showStatus('Error saving settings: ' + err, 'error');
+              saveEl.disabled = false;
+              saveEl.textContent = 'Save Settings';
+              return;
+            }
+            checkComplete();
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

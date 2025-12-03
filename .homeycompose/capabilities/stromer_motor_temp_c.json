@@ -1,0 +1,16 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Motor Temperature"
+  },
+  "units": {
+    "en": "°C"
+  },
+  "decimals": 1,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "chartType": "spline",
+  "icon": "/drivers/stromer-bike/assets/icons/05-motor-temperature.svg"
+}

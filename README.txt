@@ -1,0 +1,3 @@
+Transform your Stromer e-bike into a smart home device! Monitor battery levels, track rides, receive theft alerts, and even control your bike's lights and lock directly from Homey. Perfect for keeping tabs on your bike's health and location while seamlessly integrating it into your home automation routines.
+
+Whether you own one bike or manage a fleet, this app brings comprehensive monitoring to your fingertips. Track detailed statistics like distance, energy consumption, and temperature while setting up intelligent automations - get notified when your battery runs low, trigger actions when you unlock your bike, or create custom alerts based on any metric. Your Stromer has never been smarter.

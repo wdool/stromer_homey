@@ -1,0 +1,5 @@
+{
+  "1.0.3": {
+    "en": "This should resolve the \"Please configure your Stromer account credentials\" error that users were seeing after successfully authenticating."
+  }
+}

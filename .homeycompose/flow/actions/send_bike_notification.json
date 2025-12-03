@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Send bike status notification"
+  },
+  "hint": {
+    "en": "Send a notification with the current bike status (battery, trip distance, etc.)."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

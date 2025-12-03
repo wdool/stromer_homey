@@ -1,0 +1,15 @@
+{
+  "title": {
+    "en": "Bike was unlocked"
+  },
+  "hint": {
+    "en": "Triggers when the bike is unlocked."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "title": {
+    "en": "Battery level drops below"
+  },
+  "titleFormatted": {
+    "en": "Battery level drops below [[threshold]]%"
+  },
+  "hint": {
+    "en": "Triggers when the bike's battery level drops below the specified threshold."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    },
+    {
+      "type": "range",
+      "name": "threshold",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": {
+        "en": "Threshold"
+      },
+      "labelMultiplier": 1,
+      "labelDecimals": 0
+    }
+  ]
+}

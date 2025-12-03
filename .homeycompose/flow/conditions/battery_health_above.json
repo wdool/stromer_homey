@@ -1,0 +1,30 @@
+{
+  "title": {
+    "en": "Battery health !{{is|is not}} above"
+  },
+  "titleFormatted": {
+    "en": "Battery health !{{is|is not}} above [[threshold]]%"
+  },
+  "hint": {
+    "en": "Check if the bike's battery health is above the specified threshold."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    },
+    {
+      "type": "range",
+      "name": "threshold",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": {
+        "en": "Threshold"
+      },
+      "labelMultiplier": 1,
+      "labelDecimals": 0
+    }
+  ]
+}
