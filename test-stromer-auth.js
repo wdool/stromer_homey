@@ -143,14 +143,36 @@ class StromerAuthTester {
       if (!nextLocation) {
         const errorBody = await postResponse.text();
         this.error('No redirect after login - credentials may be wrong');
-        this.error(`Response body (first 500 chars): ${errorBody.substring(0, 500)}`);
         
-        if (errorBody.includes('incorrect') || errorBody.includes('invalid')) {
+        // Look for specific error messages in the HTML
+        const errorMatch = errorBody.match(/class="[^"]*error[^"]*"[^>]*>([^<]+)/i);
+        const alertMatch = errorBody.match(/class="[^"]*alert[^"]*"[^>]*>([^<]+)/i);
+        const formErrorMatch = errorBody.match(/errorlist[^>]*>.*?<li>([^<]+)/is);
+        
+        if (errorMatch) {
+          this.error(`Error message found: ${errorMatch[1].trim()}`);
+        }
+        if (alertMatch) {
+          this.error(`Alert message found: ${alertMatch[1].trim()}`);
+        }
+        if (formErrorMatch) {
+          this.error(`Form error found: ${formErrorMatch[1].trim()}`);
+        }
+        
+        // Check for common error indicators
+        if (errorBody.includes('incorrect') || errorBody.includes('Invalid') || errorBody.includes('invalid')) {
+          this.error('>>> INVALID USERNAME OR PASSWORD <<<');
           return { success: false, step: 2, error: 'Invalid username or password' };
         }
-        if (errorBody.includes('csrf')) {
+        if (errorBody.includes('Please enter a correct')) {
+          this.error('>>> INVALID CREDENTIALS - Stromer rejected login <<<');
+          return { success: false, step: 2, error: 'Invalid username or password (Stromer message)' };
+        }
+        if (errorBody.includes('csrf') || errorBody.includes('CSRF')) {
           return { success: false, step: 2, error: 'CSRF validation failed' };
         }
+        
+        this.error(`Response body (first 1500 chars): ${errorBody.substring(0, 1500)}`);
         return { success: false, step: 2, error: 'No redirect after login. Check username/password.' };
       }
 
