@@ -1,6 +1,6 @@
 'use strict';
 
-const fetch = require('node-fetch');
+// Use built-in fetch (Node.js 18+) or dynamic import for node-fetch
 
 class StromerAuthTester {
   constructor() {
