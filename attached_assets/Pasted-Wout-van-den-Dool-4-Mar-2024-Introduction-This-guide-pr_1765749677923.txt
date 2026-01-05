@@ -1,0 +1,238 @@
+Wout_van_den_Dool
+
+4
+Mar 2024
+Introduction:
+This guide provides step-by-step instructions on how to create a virtual device in Homey Pro to read values from the Eplucon Ecoforest Heatpump. This process involves using the “Device Capabilities” app to simulate a virtual app that communicates with your heat pump.
+
+Preparation:
+
+Confirm that your Eplucon Ecoforest Heatpump is operational and connected to the Eplucon Portal 
+Install the “Device Capabilities” app from the Homey App Store.
+Install HomeyScript app from the Homey App Store
+Step 1: Accessing Device Capabilities
+
+After installing, open the Homey Pro app on your smartphone or tablet.
+Navigate to “Apps” and select the “Device Capabilities” app.
+Step 2: Creating a Virtual Device
+
+In the “Device” section, select the option to create a new virtual device.
+Choose a relevant name and icon for your virtual device that represents the Eplucon Ecoforest Heatpump.
+CleanShot 2024-03-06 at 21.40-Safari
+CleanShot 2024-03-06 at 21.40-Safari
+1275×951 83.7 KB
+Step 3: Configuring Device Settings
+
+Define the capabilities your virtual device will have
+See screenshot below which fields I created (and matches my script)
+You could also import this String in the app”
+[tef:AVD:"H4sIAAAAAAACA42WbY+qOBSA/8qkX3VWgfKa3A+AOjKjTry+hs1mUvCgVShayqDezH/fuDszknuVwBeSnvac5zk0pb/QCt5pCF6YMmShPs48+//HtSV5fJ5p3aEz6S0byyQX3Z4akdbIn/SCthc6Bz7uHjZ21E/Pfnr+eZwn4UCOzmwRBM5xq796RZx2oJsNowYMYza2PTfQtU44/Dl4gsYgVPVJj9mZv0xyrTHEstvzl+mKdHtPpj5+lc+rl3l3gh3/hGeG8fzsqgfPXYCIqT3ypb0/mK69gx+fp9usN4tZIgbO7iA1tLnpTbBa8CALXnYJvEzsrUKX7qh9HBfqarwNnpYjXVFs5zTQyGo2m7VaZDDuL1vP3TxqOcE237Xez5k2phse6z5f5mCHUrSAjrroP2n9uXMyzN0xxbjd8YvTdLGhnHEnT1ShN4rFrAjgMFt3bdv+8QM1UZhnIk0u/c2Q9eujiVJO15SR2FshC2GCsQy4/QhgRI8Yh8YjMTX5EZMoUHRiSpKCURNlIARl60sGBAz4+vT2TuIc3i5pBWECWU3E8iQA/hpN4Sh6FOJVhqz2dXj03/srIJUiTprGQNiNNU4uRHor4JIEOLkRGNCsXDyMM2ShVGyAo69J0ogkgCzkUMaACUj2wInI89KMCewJJwJcsicBjamgkCErInEG1zmbtLAv2RMgWc7h7TsTh2smlwMR0IvTwiX8AiV4Dr9Fp2R9c9xjGV1vxG+L5E/8BeFJQQTwh1sKcg0FuZaCXKkg31GQqxSUry/AU/ZA2XcppQa0UgtaqYRW7kArVdC4DJ1T8V0L16DGtahxJTW+Q61+gs2BF4QnlK3LPVVr0Km16NRKOvUeXWVPq4Lan17ltms1xLRaYlqlmHZHTKti1782S07F7TNGr4Gv18LXK/H1O/h6Fb7xie/OH1Y8332XMmpAG39A7zlkWZnYqCQ27hAblcRDypDV/ku9DpAjsuTrgHndTgHP6VXKrCFllqQE8Ld9WpT+KGalj3nHx6z06UBIE3L5fUkfzc9bUunkF7BPk/1Ddx/nl6tTExFk/f3Px7+CkMFCUAkAAA==":/tef]
+CleanShot 2024-03-25 at 20.57-Safari
+CleanShot 2024-03-25 at 20.57-Safari
+1338×1317 183 KB
+Step 4: Establishing Communication with Eplucon Portal API
+
+Use the same credentials as you use for the portal Eplucon portaal
+Install Homeyscript in Homey
+use this script to fetch your Module ID (one time). You need to ensure that the module ID in the URL of the below below script (modules/1000704) is applied and corresponds to your actual heat pump module.
+// Login and get access token
+var result = await fetch("https://portaal.eplucon.nl/api/v2/auth/login", {
+  method: 'post',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({
+    username: 'USERNAME',
+    password: 'PASSWORD'
+  }),
+});
+
+if (!result.ok) throw new Error(result.statusText);
+
+const body = await result.json();
+console.log(body)
+
+var access_token = body.access_token;
+await tag("eplucon_access_token", access_token);
+
+// Fetch account info
+var accountInfo = await fetch("https://portaal.eplucon.nl/api/v2/account/info", {
+  method: 'get',
+  headers: {
+    'Authorization': `Bearer ${access_token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+if (!accountInfo.ok) throw new Error(accountInfo.statusText);
+
+const accountInfoBody = await accountInfo.json();
+console.log(accountInfoBody);
+
+// Fetch list of accounts modules
+var modules = await fetch("https://portaal.eplucon.nl/api/v2/econtrol/modules", {
+  method: 'get',
+  headers: {
+    'Authorization': `Bearer ${access_token}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+if (!modules.ok) throw new Error(modules.statusText);
+
+const modulesBody = await modules.json();
+console.log(modulesBody);
+Use this script to fetch the variables from Eplucon on a continuous base, only amend
+USERNAME
+PASSWORD
+MODULEID in the url (modules/1000704)
+// Login and get access token
+var result = await fetch("https://portaal.eplucon.nl/api/v2/auth/login", {
+  method: 'post',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
+  body: JSON.stringify({
+    username: 'USERNAME',
+    password: 'PASSWORD'
+  }),
+});
+
+if (!result.ok) throw new Error(result.statusText);
+
+const body = await result.json();
+var access_token = body.access_token;
+await tag("eplucon_access_token", access_token);
+
+// Get the current date
+const currentDate = new Date();
+
+// Fetch statistics
+const urlStats = `https://portaal.eplucon.nl/api/v2/econtrol/modules/1000704/statistics?range=day&day=${currentDate.getDate()}&month=${currentDate.getMonth() + 1}&year=${currentDate.getFullYear()}`;
+const optionsStats = {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${access_token}`,
+    'Accept': 'application/json'
+  }
+};
+
+try {
+  const responseStats = await fetch(urlStats, optionsStats);
+  const dataStats = await responseStats.json();
+  
+  // Get the latest data point
+  const latestDataStats = dataStats.data.data[dataStats.data.data.length - 1];
+  
+  // Create an object with the desired structure
+  const output = {
+    Binnentemperatuur: { value: parseFloat(latestDataStats.Binnentemperatuur) },
+    WW_temperatuur: { value: parseFloat(latestDataStats['WW temperatuur']) },
+    Actuele_temp_DG1: { value: parseFloat(latestDataStats['Actuele temp. DG1']) },
+    Brine_in_temperatuur: { value: parseFloat(latestDataStats['Brine in temperatuur']) },
+    Brine_out_temperatuur: { value: parseFloat(latestDataStats['Brine out temperatuur']) },
+    Heating_in_temperatuur: { value: parseFloat(latestDataStats['Heating in temperatuur']) },
+    Heating_out_temperatuur: { value: parseFloat(latestDataStats['Heating out temperatuur']) },
+    Buitentemp: { value: parseFloat(latestDataStats['Buitentemp.']) },
+    Timestamp: { value: latestDataStats.created_at },
+    // Added values
+    Cv_druk: { value: parseFloat(latestDataStats['Cv druk']) },
+    Actueel_verbruik: { value: parseFloat(latestDataStats['Actueel verbruik']) },
+  };
+  
+  // Create tags from the output object
+  for (let key in output) {
+    await tag(key, output[key].value);
+  }
+  
+  // Return the output
+  return output;
+} catch (error) {
+  console.error(error);
+}
+If you want more values, you might consider to ask ChatGPT to extend the script in the same manner for these variables:
+Binnentemperatuur":20.5,“WW”:1,“Ingestelde temp. WW”:45,“Aanvoer setpoint verwarming”:21,“Aanvoer setpoint koeling”:15,“Ingestelde temp.”:20,“Brine in temperatuur”:2,“Brine druk”:1.9,“Brine out temperatuur”:-0.3,“Heating out temperatuur”:34.2,“Cv druk”:1.8,“Heating in temperatuur”:29.4,“Verdamping temperatuuur”:-3,“Condensatie temp.”:34.5,“Inverter temp.”:4,“Compressor toerental”:179.5,“Zuig gas temperatuur”:2.5,“Compressorzuigdruk”:6.3,“Pers gas temperatuur”:61.2,“Compressorafvoerdruk”:20.1,“Oververhitting”:5.4,“Positie expansie ventiel”:41,“Buitentemp.”:4.5,“WW temperatuur”:48.4,“Actueel verbruik”:0,“Totaal import energie”:0,“Totaal export energie”:0,“Act. vent. toerental”:25,“Actuele temp. DG1”:34.2,“Actuele temp. SG2”:0,“Actuele temp. SG3”:-999.9,“Actuele temp. SG4”:-999.9,“Setpoint verwarming DG1”:31.6,“Setpoint verwarming SG2”:0,“Setpoint verwarming SG3”:0,“Setpoint verwarming SG4”:0,“Setpoint koeling DG1”:18,“Setpoint koeling SG2”:10,“Setpoint koeling SG3”:10,“Setpoint koeling SG4”:10,“Positie ventiel SG2”:100,“Positie ventiel SG3”:100,“Positie ventiel SG4”:100,“created_at”:"2024-03-24T00:00:00
+
+Step 5: Create a flow to fetch the data
+
+
+
+Step 6: The fun part
+
+In Insights you can track performance of the values.
+I use it to compare “graaddagen” with the performance of the pump
+I use it to prevent the CV Druk will be below 1,2 then refill and warning below 0,8 unstable situation, and 0,5 Heatpump stops operating
+I want to use to also track Energy consumption, but need to install first the energy meter in the fuse box… That will also make the connection between solar panels and optimize the heat pump energy usage
+CleanShot 2024-03-25 at 21.05-Safari
+CleanShot 2024-03-25 at 21.05-Safari
+1335×1265 179 KB
+Your help is highly appreciated
+In essence, your expertise can elevate this guide to the next level. I welcome your feedback and any additional insights or flows you’ve crafted. Let’s collaborate to optimize our use of the Eplucon Ecoforest Heatpump in the smartest ways possible. Share your thoughts and findings here. Thank you for contributing to this innovative journey.
+
+
+Blockquote @Theo_Hendriks : Hi Wout, is this read only or are you also able use Homey to change settings of the Heatpump, like On/OFF, setting temprature of te Boiler, or adjusting the weekly schedule for heating and tap water to match the de day low prices. I currently use smart plugs to switch my Techcontrollers, which manage the underfloor heating distributors, on or off depending on the heat demand and actual electricity price.
+Indeed this is a read only virtual device. But from the API documentation and after a conversation with Eplucon you also should be able to “write” settings. I did not implement this since I lack the knowledge to do so, but MAINLY because I do not change the settings that often. The API is very complete in changing settings.
+
+Regarding “daily low prices” you can change that in the Eplucon portal (i did also):
+
+CleanShot 2024-03-27 at 13.27-Google Chrome
+CleanShot 2024-03-27 at 13.27-Google Chrome
+1325×1196 126 KB
+For the PV Output and steering hot water / boiler I am working on to have a energy meter in the Fuze box.
+
+
+
+1.4k
+views
+
+8
+likes
+
+9
+links
+
+6
+users
+ 
+ 
+ 
+ 
+ 
+read
+7 min
+
+Summarize
+post by Wout_van_den_Dool on Mar 25, 2024
+post by Wout_van_den_Dool on Mar 27, 2024
+post by JaccoStraaijer on Mar 28, 2024
+post by Wout_van_den_Dool on Mar 28, 2024
+post by Klaas_Hoo on Mar 28, 2024
+post by JaccoStraaijer on Mar 29, 2024
+post by Wout_van_den_Dool on Mar 30, 2024
+post by JaccoStraaijer on Mar 31, 2024
+8 days later
+post by flowerpiece on Apr 9, 2024
+post by Wout_van_den_Dool on Apr 9, 2024
+post by flowerpiece on Apr 9, 2024
+post by Wout_van_den_Dool on Apr 9, 2024
+post by flowerpiece on Apr 12, 2024
+post by Wout_van_den_Dool on Apr 12, 2024
+post by Wout_van_den_Dool on Apr 17, 2024
+post by flowerpiece on Apr 22, 2024
+post by Wout_van_den_Dool on Apr 22, 2024
+post by flowerpiece on Apr 22, 2024
+1 month later
+post by Wout_van_den_Dool on May 26, 2024
+post by flowerpiece on May 28, 2024
+7 months later
+post by Peter_Haijen on Dec 11, 2024
+post by Kenny_S on Dec 11, 2024
+post by Wout_van_den_Dool on Dec 12, 2024
+post by Peter_Haijen on Dec 13, 2024
+2 months later
+post by Wout_van_den_Dool on Feb 3
+post by Kenny_S on Feb 5
