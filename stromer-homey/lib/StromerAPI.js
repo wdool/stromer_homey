@@ -13,9 +13,26 @@ class StromerAPI {
     this.clientSecret = null;
     this.username = null;
     this.password = null;
+    this.lastDebugLog = [];
+  }
+
+  debugLog(message) {
+    const timestamp = new Date().toISOString();
+    const logLine = `[${timestamp}] ${message}`;
+    this.lastDebugLog.push(logLine);
+    this.log(message);
+  }
+
+  getDebugLog() {
+    return this.lastDebugLog.join('\n');
+  }
+
+  clearDebugLog() {
+    this.lastDebugLog = [];
   }
 
   async authenticate(username, password, clientId, clientSecret = null) {
+    this.clearDebugLog();
     this.username = username;
     this.password = password;
     this.clientId = clientId;
@@ -30,18 +47,22 @@ class StromerAPI {
       ? `${this.baseUrl}/mobile/v4/o/token/`
       : `${this.baseUrl}/o/token/`;
 
-    this.log('[StromerAPI] Starting authentication with CSRF token flow');
-    this.log(`  - API Version: ${apiVersion}`);
-    this.log(`  - Username: ${username}`);
-    this.log(`  - Client ID: ${clientId}`);
-    this.log(`  - Password: ${password ? '***' + password.slice(-3) : 'NOT SET'}`);
+    this.debugLog('=== STROMER AUTHENTICATION DEBUG LOG ===');
+    this.debugLog(`API Version: ${apiVersion}`);
+    this.debugLog(`Username: ${username}`);
+    this.debugLog(`Client ID: ${clientId}`);
+    this.debugLog(`Password: ${password ? '***' + password.slice(-3) : 'NOT SET'}');
+    this.debugLog(`Login URL: ${loginUrl}`);
+    this.debugLog('');
 
     try {
-      this.log('[StromerAPI] Step 1: GET login page to obtain CSRF token and session');
+      this.debugLog('STEP 1: GET login page to obtain CSRF token');
+      this.debugLog(`  Request: GET ${loginUrl}`);
       const getResponse = await fetch(loginUrl, {
         method: 'GET',
         redirect: 'manual'
       });
+      this.debugLog(`  Response Status: ${getResponse.status} ${getResponse.statusText}`);
 
       const rawSetCookies = getResponse.headers.raw?.()['set-cookie'] ?? [];
       if (rawSetCookies.length === 0) {
@@ -52,6 +73,7 @@ class StromerAPI {
       }
       
       if (rawSetCookies.length === 0) {
+        this.debugLog('  ERROR: No Set-Cookie header received');
         throw new Error('No Set-Cookie header received from login page');
       }
 
@@ -64,10 +86,15 @@ class StromerAPI {
       }
 
       if (!cookieJar.csrftoken) {
+        this.debugLog('  ERROR: CSRF token not in cookies');
+        this.debugLog(`  Cookies received: ${Object.keys(cookieJar).join(', ') || 'none'}`);
         throw new Error('CSRF token not found in Set-Cookie header');
       }
       const csrftoken = cookieJar.csrftoken;
-      this.log(`[StromerAPI] Cookies extracted: ${Object.keys(cookieJar).join(', ')}`);
+      this.debugLog(`  CSRF Token: ${csrftoken.substring(0, 20)}...`);
+      this.debugLog(`  Cookies: ${Object.keys(cookieJar).join(', ')}`);
+      this.debugLog('  Step 1: SUCCESS');
+      this.debugLog('');
 
       const oauthParams = new URLSearchParams({
         client_id: clientId,
@@ -94,7 +121,8 @@ class StromerAPI {
 
       const cookieString = Object.entries(cookieJar).map(([k, v]) => `${k}=${v}`).join('; ');
 
-      this.log('[StromerAPI] Step 2: POST credentials with CSRF token and session');
+      this.debugLog('STEP 2: POST credentials with CSRF token');
+      this.debugLog(`  Request: POST ${loginUrl}`);
       const postResponse = await fetch(loginUrl, {
         method: 'POST',
         headers: {
@@ -105,6 +133,7 @@ class StromerAPI {
         body: formData.toString(),
         redirect: 'manual'
       });
+      this.debugLog(`  Response Status: ${postResponse.status} ${postResponse.statusText}`);
 
       const rawPostCookies = postResponse.headers.raw?.()['set-cookie'] ?? [];
       if (rawPostCookies.length === 0) {
@@ -122,20 +151,21 @@ class StromerAPI {
       }
       
       if (rawPostCookies.length > 0) {
-        this.log(`[StromerAPI] Updated cookies: ${Object.keys(cookieJar).join(', ')}`);
+        this.debugLog(`  Updated cookies: ${Object.keys(cookieJar).join(', ')}`);
       }
 
       const nextLocation = postResponse.headers.get('location');
       if (!nextLocation) {
         const errorBody = await postResponse.text();
-        this.error('[StromerAPI] No redirect after login. Response:', errorBody.substring(0, 1000));
+        this.debugLog('  ERROR: No redirect after login');
+        this.debugLog(`  Response body (first 2000 chars):`);
+        this.debugLog(errorBody.substring(0, 2000));
         
-        // Parse specific error messages from Stromer's response
         let errorMessage = 'Authentication failed';
         
         if (errorBody.includes('Please enter a correct')) {
           errorMessage = 'Invalid username or password. Please check your Stromer credentials.';
-          this.error('[StromerAPI] >>> STROMER REJECTED CREDENTIALS <<<');
+          this.debugLog('  >>> STROMER REJECTED CREDENTIALS <<<');
         } else if (errorBody.includes('invalid') || errorBody.includes('Invalid') || errorBody.includes('incorrect')) {
           errorMessage = 'Invalid credentials. Please verify your email and password work in the Stromer app.';
         } else if (errorBody.includes('CSRF') || errorBody.includes('csrf')) {
@@ -146,13 +176,24 @@ class StromerAPI {
           errorMessage = 'Login failed. Please verify your credentials work in the official Stromer app.';
         }
         
-        throw new Error(errorMessage);
+        this.debugLog('');
+        this.debugLog(`FINAL ERROR: ${errorMessage}`);
+        this.debugLog('=== END OF DEBUG LOG ===');
+        
+        const debugError = new Error(errorMessage);
+        debugError.debugLog = this.getDebugLog();
+        throw debugError;
       }
 
-      this.log(`[StromerAPI] Step 3: Follow redirect to authorization endpoint`);
+      this.debugLog(`  Redirect Location: ${nextLocation.substring(0, 80)}...`);
+      this.debugLog('  Step 2: SUCCESS');
+      this.debugLog('');
+
+      this.debugLog('STEP 3: Follow redirect to get authorization code');
       const authorizeUrl = nextLocation.startsWith('http') 
         ? nextLocation 
         : `${this.baseUrl}${nextLocation}`;
+      this.debugLog(`  Request: GET ${authorizeUrl.substring(0, 80)}...`);
 
       const updatedCookieString = Object.entries(cookieJar).map(([k, v]) => `${k}=${v}`).join('; ');
 
@@ -163,20 +204,32 @@ class StromerAPI {
         },
         redirect: 'manual'
       });
+      this.debugLog(`  Response Status: ${authorizeResponse.status} ${authorizeResponse.statusText}`);
 
       const codeLocation = authorizeResponse.headers.get('location');
       if (!codeLocation) {
-        throw new Error('No authorization code redirect received');
+        this.debugLog('  ERROR: No authorization code redirect');
+        this.debugLog('=== END OF DEBUG LOG ===');
+        const debugError = new Error('No authorization code redirect received');
+        debugError.debugLog = this.getDebugLog();
+        throw debugError;
       }
 
       const codeMatch = codeLocation.match(/[?&]code=([^&]+)/);
       if (!codeMatch) {
-        throw new Error('Authorization code not found in redirect URL');
+        this.debugLog(`  ERROR: Auth code not in redirect: ${codeLocation}`);
+        this.debugLog('=== END OF DEBUG LOG ===');
+        const debugError = new Error('Authorization code not found in redirect URL');
+        debugError.debugLog = this.getDebugLog();
+        throw debugError;
       }
       const authCode = codeMatch[1];
-      this.log(`[StromerAPI] Authorization code obtained: ${authCode.substring(0, 8)}...`);
+      this.debugLog(`  Authorization Code: ${authCode.substring(0, 15)}...`);
+      this.debugLog('  Step 3: SUCCESS');
+      this.debugLog('');
 
-      this.log('[StromerAPI] Step 4: Exchange authorization code for access token');
+      this.debugLog('STEP 4: Exchange code for access token');
+      this.debugLog(`  Request: POST ${tokenUrl}`);
       const tokenFormData = new URLSearchParams({
         grant_type: 'authorization_code',
         client_id: clientId,
@@ -195,15 +248,24 @@ class StromerAPI {
         },
         body: tokenFormData.toString()
       });
+      this.debugLog(`  Response Status: ${tokenResponse.status} ${tokenResponse.statusText}`);
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text();
-        this.error('[StromerAPI] Token exchange failed:', errorText);
-        throw new Error(`Token exchange failed (${tokenResponse.status}): ${errorText.substring(0, 200)}`);
+        this.debugLog(`  ERROR: Token exchange failed`);
+        this.debugLog(`  Response: ${errorText}`);
+        this.debugLog('=== END OF DEBUG LOG ===');
+        const debugError = new Error(`Token exchange failed (${tokenResponse.status}): ${errorText.substring(0, 200)}`);
+        debugError.debugLog = this.getDebugLog();
+        throw debugError;
       }
 
       const tokenData = await tokenResponse.json();
-      this.log('[StromerAPI] Access token received successfully');
+      this.debugLog(`  Access Token: ${tokenData.access_token.substring(0, 20)}...`);
+      this.debugLog(`  Expires In: ${tokenData.expires_in} seconds`);
+      this.debugLog('  Step 4: SUCCESS');
+      this.debugLog('');
+      this.debugLog('=== AUTHENTICATION COMPLETE ===');
       
       this.tokens = {
         access_token: tokenData.access_token,
@@ -213,10 +275,13 @@ class StromerAPI {
         expires_at: Date.now() + ((tokenData.expires_in || 3600) * 1000)
       };
 
-      this.log('[StromerAPI] Authentication successful');
       return this.tokens;
     } catch (error) {
-      this.error('[StromerAPI] Authentication failed:', error.message);
+      if (!error.debugLog) {
+        this.debugLog(`UNEXPECTED ERROR: ${error.message}`);
+        this.debugLog('=== END OF DEBUG LOG ===');
+        error.debugLog = this.getDebugLog();
+      }
       throw error;
     }
   }

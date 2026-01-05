@@ -7,6 +7,17 @@ class StromerBikeDriver extends Homey.Driver {
     this.log('StromerBikeDriver has been initialized');
   }
 
+  formatDebugError(error) {
+    const debugLog = error.debugLog || '';
+    const separator = '\n\n========== DEBUG LOG (copy this) ==========\n';
+    const endSeparator = '\n============================================';
+    
+    if (debugLog) {
+      return `${error.message}${separator}${debugLog}${endSeparator}`;
+    }
+    return error.message;
+  }
+
   async onPair(session) {
     const authService = this.homey.app.getAuthService();
     let bikes = [];
@@ -14,14 +25,40 @@ class StromerBikeDriver extends Homey.Driver {
     session.setHandler('list_devices', async () => {
       try {
         if (!authService.isAuthenticated) {
-          throw new Error('Please configure your Stromer account credentials in App Settings first and save to authenticate');
+          const api = authService.getAPI();
+          let debugInfo = '';
+          if (api) {
+            debugInfo = api.getDebugLog();
+          }
+          
+          const errorMsg = 'Please configure your Stromer account credentials in App Settings first and save to authenticate';
+          if (debugInfo) {
+            throw new Error(`${errorMsg}\n\n========== DEBUG LOG (copy this) ==========\n${debugInfo}\n============================================`);
+          }
+          throw new Error(errorMsg);
         }
 
         this.log('Fetching bikes from authenticated session...');
-        bikes = await authService.getBikes();
+        
+        try {
+          bikes = await authService.getBikes();
+        } catch (fetchError) {
+          this.error('Error fetching bikes:', fetchError.message);
+          throw new Error(this.formatDebugError(fetchError));
+        }
         
         if (!bikes || bikes.length === 0) {
-          throw new Error('No bikes found in your account');
+          const api = authService.getAPI();
+          let debugInfo = '';
+          if (api) {
+            debugInfo = api.getDebugLog();
+          }
+          
+          const errorMsg = 'No bikes found in your Stromer account. Please verify your bike is linked in the official Stromer app.';
+          if (debugInfo) {
+            throw new Error(`${errorMsg}\n\n========== DEBUG LOG (copy this) ==========\n${debugInfo}\n============================================`);
+          }
+          throw new Error(errorMsg);
         }
 
         this.log(`Found ${bikes.length} bike(s)`);
@@ -45,6 +82,9 @@ class StromerBikeDriver extends Homey.Driver {
         });
       } catch (error) {
         this.error('Error during pairing:', error.message);
+        if (error.debugLog) {
+          throw new Error(this.formatDebugError(error));
+        }
         throw error;
       }
     });
@@ -56,7 +96,17 @@ class StromerBikeDriver extends Homey.Driver {
         const authService = this.homey.app.getAuthService();
         
         if (!authService.isAuthenticated) {
-          throw new Error('Please configure your Stromer account credentials in App Settings first and save to authenticate');
+          const api = authService.getAPI();
+          let debugInfo = '';
+          if (api) {
+            debugInfo = api.getDebugLog();
+          }
+          
+          const errorMsg = 'Please configure your Stromer account credentials in App Settings first and save to authenticate';
+          if (debugInfo) {
+            throw new Error(`${errorMsg}\n\n========== DEBUG LOG (copy this) ==========\n${debugInfo}\n============================================`);
+          }
+          throw new Error(errorMsg);
         }
 
         this.log('Re-initializing device with existing session...');
@@ -66,6 +116,9 @@ class StromerBikeDriver extends Homey.Driver {
         return true;
       } catch (error) {
         this.error('Repair failed:', error.message);
+        if (error.debugLog) {
+          throw new Error(this.formatDebugError(error));
+        }
         throw new Error(`Repair failed: ${error.message}`);
       }
     });
