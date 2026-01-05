@@ -128,8 +128,25 @@ class StromerAPI {
       const nextLocation = postResponse.headers.get('location');
       if (!nextLocation) {
         const errorBody = await postResponse.text();
-        this.error('[StromerAPI] No redirect after login. Response:', errorBody.substring(0, 500));
-        throw new Error('Authentication failed: No redirect location received. Check username/password.');
+        this.error('[StromerAPI] No redirect after login. Response:', errorBody.substring(0, 1000));
+        
+        // Parse specific error messages from Stromer's response
+        let errorMessage = 'Authentication failed';
+        
+        if (errorBody.includes('Please enter a correct')) {
+          errorMessage = 'Invalid username or password. Please check your Stromer credentials.';
+          this.error('[StromerAPI] >>> STROMER REJECTED CREDENTIALS <<<');
+        } else if (errorBody.includes('invalid') || errorBody.includes('Invalid') || errorBody.includes('incorrect')) {
+          errorMessage = 'Invalid credentials. Please verify your email and password work in the Stromer app.';
+        } else if (errorBody.includes('CSRF') || errorBody.includes('csrf')) {
+          errorMessage = 'Session validation failed. Please try again.';
+        } else if (errorBody.includes('locked') || errorBody.includes('disabled')) {
+          errorMessage = 'Account may be locked or disabled. Please contact Stromer support.';
+        } else {
+          errorMessage = 'Login failed. Please verify your credentials work in the official Stromer app.';
+        }
+        
+        throw new Error(errorMessage);
       }
 
       this.log(`[StromerAPI] Step 3: Follow redirect to authorization endpoint`);
