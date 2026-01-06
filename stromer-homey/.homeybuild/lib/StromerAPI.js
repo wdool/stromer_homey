@@ -51,7 +51,7 @@ class StromerAPI {
     this.debugLog(`API Version: ${apiVersion}`);
     this.debugLog(`Username: ${username}`);
     this.debugLog(`Client ID: ${clientId}`);
-    this.debugLog(`Password: ${password ? '***' + password.slice(-3) : 'NOT SET'}');
+    this.debugLog(`Password: ${password ? '***' + password.slice(-3) : 'NOT SET'}`);
     this.debugLog(`Login URL: ${loginUrl}`);
     this.debugLog('');
 
