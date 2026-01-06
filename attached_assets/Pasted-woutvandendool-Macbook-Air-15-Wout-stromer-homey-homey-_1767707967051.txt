@@ -1,0 +1,51 @@
+woutvandendool@Macbook-Air-15-Wout stromer-homey % homey app install
+✓ Pre-processing app...
+Added FlowCard `battery_health_low` for type `triggers`
+Added FlowCard `battery_low` for type `triggers`
+Added FlowCard `bike_unlocked` for type `triggers`
+Added FlowCard `theft_activated` for type `triggers`
+Added FlowCard `trip_distance_exceeds` for type `triggers`
+Added FlowCard `trip_speed_exceeds` for type `triggers`
+Added FlowCard `battery_above` for type `conditions`
+Added FlowCard `battery_health_above` for type `conditions`
+Added FlowCard `is_locked` for type `conditions`
+Added FlowCard `light_on` for type `conditions`
+Added FlowCard `temp_in_range` for type `conditions`
+Added FlowCard `theft_active` for type `conditions`
+Added FlowCard `lock_bike` for type `actions`
+Added FlowCard `reset_trip_distance` for type `actions`
+Added FlowCard `send_bike_notification` for type `actions`
+Added FlowCard `toggle_light` for type `actions`
+Added FlowCard `unlock_bike` for type `actions`
+Added Driver `stromer-bike`
+Added Capability `alarm_theft`
+Added Capability `stromer_assistance_level`
+Added Capability `stromer_atmospheric_pressure`
+Added Capability `stromer_average_speed_trip`
+Added Capability `stromer_avg_energy`
+Added Capability `stromer_battery_health`
+Added Capability `stromer_battery_temp_c`
+Added Capability `stromer_distance_avg_speed`
+Added Capability `stromer_distance_total`
+Added Capability `stromer_location`
+Added Capability `stromer_month_distance`
+Added Capability `stromer_motor_temp_c`
+Added Capability `stromer_power_cycles`
+Added Capability `stromer_state_of_charge`
+Added Capability `stromer_total_energy_consumption`
+Added Capability `stromer_trip_distance`
+Added Capability `stromer_user_total_distance`
+Added Capability `stromer_week_distance`
+Added Capability `stromer_year_distance`
+✖ Command failed: npm ls --parseable --all --only=prod
+npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+npm error code ELSPROBLEMS
+npm error missing: node-fetch@^2.7.0, required by com.stromer.bike@1.0.0
+npm error A complete log of this run can be found in: /Users/woutvandendool/.npm/_logs/2026-01-06T13_59_09_902Z-debug-0.log
+
+✖ Error: This error may be fixed by running `npm install` in your app.
+    at /opt/homebrew/lib/node_modules/homey/lib/App.js:988:15
+    at async App._copyAppProductionDependencies (/opt/homebrew/lib/node_modules/homey/lib/App.js:985:26)
+    at async App.preprocess (/opt/homebrew/lib/node_modules/homey/lib/App.js:876:7)
+    at async App.install (/opt/homebrew/lib/node_modules/homey/lib/App.js:809:7)
+    at async exports.handler (/opt/homebrew/lib/node_modules/homey/bin/cmds/app/install.js:25:5)

@@ -1,0 +1,75 @@
+woutvandendool@Macbook-Air-15-Wout stromer-homey % homey app run
+✓ Pre-processing app...
+Added FlowCard `battery_health_low` for type `triggers`
+Added FlowCard `battery_low` for type `triggers`
+Added FlowCard `bike_unlocked` for type `triggers`
+Added FlowCard `theft_activated` for type `triggers`
+Added FlowCard `trip_distance_exceeds` for type `triggers`
+Added FlowCard `trip_speed_exceeds` for type `triggers`
+Added FlowCard `battery_above` for type `conditions`
+Added FlowCard `battery_health_above` for type `conditions`
+Added FlowCard `is_locked` for type `conditions`
+Added FlowCard `light_on` for type `conditions`
+Added FlowCard `temp_in_range` for type `conditions`
+Added FlowCard `theft_active` for type `conditions`
+Added FlowCard `lock_bike` for type `actions`
+Added FlowCard `reset_trip_distance` for type `actions`
+Added FlowCard `send_bike_notification` for type `actions`
+Added FlowCard `toggle_light` for type `actions`
+Added FlowCard `unlock_bike` for type `actions`
+Added Driver `stromer-bike`
+Added Capability `alarm_theft`
+Added Capability `stromer_assistance_level`
+Added Capability `stromer_atmospheric_pressure`
+Added Capability `stromer_average_speed_trip`
+Added Capability `stromer_avg_energy`
+Added Capability `stromer_battery_health`
+Added Capability `stromer_battery_temp_c`
+Added Capability `stromer_distance_avg_speed`
+Added Capability `stromer_distance_total`
+Added Capability `stromer_location`
+Added Capability `stromer_month_distance`
+Added Capability `stromer_motor_temp_c`
+Added Capability `stromer_power_cycles`
+Added Capability `stromer_state_of_charge`
+Added Capability `stromer_total_energy_consumption`
+Added Capability `stromer_trip_distance`
+Added Capability `stromer_user_total_distance`
+Added Capability `stromer_week_distance`
+Added Capability `stromer_year_distance`
+✓ Validating app...
+✓ App validated successfully against level `debug`
+✓ Creating Remote Debug Session...
+✓ Downloading Docker Image...
+ — [latest] Pulling from athombv/homey-app-runner
+ — Digest: sha256:e0938084d506efef216c7f7801bc336d705450b32e5b816fb2a4edb8940e15cd
+ — Status: Image is up to date for ghcr.io/athombv/homey-app-runner:latest
+✓ Preparing Environment Variables...
+✓ Connecting to `Homey pro 23`...
+✓ Starting `com.stromer.bike@1.0.7` remotely...
+✓ Starting debugger at 0.0.0.0:9229...
+ — Open `about://inspect` in Google Chrome and select the remote target.
+✓ Starting `com.stromer.bike@1.0.7` in a Docker container...
+ — Press CTRL+C to quit.
+─────────────── Logging stdout & stderr ───────────────
+Modified: /var/folders/4z/7k2rccln69dbpmm6n1s6bnt40000gn/T/apps-tmp/com.stromer.bike/com.stromer.bike
+Debugger listening on ws://0.0.0.0:9229/ed5edb45-b5fa-4878-8d43-aeb88fbde4d0
+For help, see: https://nodejs.org/en/docs/inspector
+✖ App Crashed. Stack Trace:
+✖ missing ) after argument list
+───────────────────────────────────────────────────────
+✓ Uninstalling `com.stromer.bike`...
+✓ Removing container...
+node:internal/process/promises:392
+      new UnhandledPromiseRejection(reason);
+      ^
+
+UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "missing ) after argument list".
+    at throwUnhandledRejectionsMode (node:internal/process/promises:392:7)
+    at processPromiseRejections (node:internal/process/promises:475:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:106:32) {
+  code: 'ERR_UNHANDLED_REJECTION'
+}
+
+Node.js v23.11.0
+woutvandendool@Macbook-Air-15-Wout stromer-homey % 
