@@ -1,0 +1,75 @@
+Herken je iets van het bericht?
+
+
+last visit
+post by KrAck 12 hours ago
+ 
+KrAck
+
+1
+12h
+Dag Wout, ik heb een Homey Pro 2023 en dit is wat ik in de logs te zien krijg.
+
+========== DEBUG LOG (copy this) ==========
+[2026-01-25T07:16:24.811Z] === STROMER AUTHENTICATION DEBUG LOG ===
+[2026-01-25T07:16:24.813Z] API Version: v4
+[2026-01-25T07:16:24.814Z] Username: kaviar@telenet.be
+[2026-01-25T07:16:24.814Z] Client ID: 4P3VE9rBYdueKQioWb7nv7RJDU8EQsn2wiQaNqhG
+[2026-01-25T07:16:24.814Z] Password: ***!k3
+[2026-01-25T07:16:24.814Z] Login URL: stromer-portal
+[2026-01-25T07:16:24.814Z]
+[2026-01-25T07:16:24.814Z] STEP 1: GET login page to obtain CSRF token
+[2026-01-25T07:16:24.814Z] Request: GET stromer-portal
+[2026-01-25T07:16:25.514Z] Response Status: 200 OK
+[2026-01-25T07:16:25.514Z] CSRF Token: AXfoKXbf9jzjXoyjzbTY…
+[2026-01-25T07:16:25.515Z] Cookies: csrftoken
+[2026-01-25T07:16:25.515Z] Step 1: SUCCESS
+[2026-01-25T07:16:25.515Z]
+[2026-01-25T07:16:25.516Z] STEP 2: POST credentials with CSRF token
+[2026-01-25T07:16:25.516Z] Request: POST stromer-portal
+[2026-01-25T07:16:26.245Z] Response Status: 200 OK
+[2026-01-25T07:16:26.246Z] Updated cookies: csrftoken
+[2026-01-25T07:16:26.248Z] ERROR: No redirect after login
+[2026-01-25T07:16:26.249Z] Response body (first 2000 chars):
+[2026-01-25T07:16:26.249Z]
+
+stromer-portal
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<link href="/static/css/mobile/v4/ace.min.css" rel="stylesheet">
+
+<link href="/static/css/mobile/v4/main.css" rel="stylesheet">
+<div class="messages">
+
+</div>
+
+<!-- Begin page content -->
+<div class="content flex flex-column m1">
+Stromer logo
+  <div class="clearfix error-row">
+    <div class="col">
+      
+        <p class="errornote bg-danger">Please enter a correct email address and password. Note that both fields may be case-sensitive.</p>
+      
+    </div>
+  </div>
+
+
+
+<div class=" form__field field-wrapper">
+  <label for="id_username">Email address:</label>
+  <input type="text" name="username" value="kaviar@telenet.be" autofocus autocapitalize="none" autocomplete="username" maxlength="254" 
+[2026-01-25T07:16:26.249Z] >>> STROMER REJECTED CREDENTIALS <<<
+[2026-01-25T07:16:26.249Z]
+[2026-01-25T07:16:26.249Z] FINAL ERROR: Invalid username or password. Please check your Stromer credentials.
+[2026-01-25T07:16:26.249Z] === END OF DEBUG LOG ===
+
+at Remote Process
+Het lijkt mis te gaan in Step 2 en het lijkt dus iets met de redirect te maken te hebben.
+
+Heb hier zeker geen firewall staan, ik zit bij Telenet (België) als provider.
+
+Sowieso al van harte bedankt voor al je moeite hé!
