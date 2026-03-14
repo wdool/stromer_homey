@@ -11,6 +11,7 @@
   "capabilities": [
     "stromer_state_of_charge",
     "stromer_battery_health",
+    "stromer_charge_time",
     "stromer_trip_distance",
     "stromer_average_speed_trip",
     "stromer_motor_temp_c",
@@ -63,6 +64,9 @@
     },
     "stromer_location": {
       "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
+    },
+    "stromer_charge_time": {
+      "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
     },
     "alarm_theft": {
       "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.png"
@@ -270,6 +274,74 @@
             "en": "Bike Name"
           },
           "value": "-"
+        },
+        {
+          "id": "battery_size",
+          "type": "dropdown",
+          "label": {
+            "en": "Battery Size"
+          },
+          "hint": {
+            "en": "Select your Stromer battery model to enable charge time calculations"
+          },
+          "value": "none",
+          "values": [
+            {
+              "id": "none",
+              "label": {
+                "en": "Not configured"
+              }
+            },
+            {
+              "id": "BQ618",
+              "label": {
+                "en": "BQ618 (618 Wh)"
+              }
+            },
+            {
+              "id": "BQ814",
+              "label": {
+                "en": "BQ814 (814 Wh)"
+              }
+            },
+            {
+              "id": "BQ983",
+              "label": {
+                "en": "BQ983 (983 Wh)"
+              }
+            },
+            {
+              "id": "BQ1440",
+              "label": {
+                "en": "BQ1440 (1440 Wh)"
+              }
+            }
+          ]
+        },
+        {
+          "id": "charge_target",
+          "type": "dropdown",
+          "label": {
+            "en": "Charge To"
+          },
+          "hint": {
+            "en": "Target charge level for the charge time calculation"
+          },
+          "value": "100",
+          "values": [
+            {
+              "id": "80",
+              "label": {
+                "en": "80% (faster, better for battery health)"
+              }
+            },
+            {
+              "id": "100",
+              "label": {
+                "en": "100% (full charge)"
+              }
+            }
+          ]
         }
       ]
     }

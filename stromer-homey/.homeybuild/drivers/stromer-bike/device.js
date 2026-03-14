@@ -65,6 +65,60 @@ class StromerBikeDevice extends Homey.Device {
       this.log('Baselines changed, updating data');
       await this.updateBikeData();
     }
+
+    if (changedKeys.includes('battery_size') || changedKeys.includes('charge_target')) {
+      this.log('Charge settings changed, recalculating charge time');
+      const soc = this.getCapabilityValue('measure_battery') || 0;
+      await this.updateChargeTime(soc);
+    }
+  }
+
+  calculateChargeTime(soc, batteryWh, chargeTarget) {
+    const CHARGER_POWER = 240;
+    const TAPER_FACTOR = 1.18;
+
+    const socFraction = soc / 100;
+
+    if (chargeTarget === 80) {
+      const minutesTo80 = Math.max(0, (0.8 - socFraction) * batteryWh / CHARGER_POWER * 60);
+      return Math.round(minutesTo80);
+    } else {
+      const minutesTo80 = Math.max(0, (0.8 - socFraction) * batteryWh / CHARGER_POWER * 60);
+      const minutesTo100 = Math.round(minutesTo80 * TAPER_FACTOR);
+      return minutesTo100;
+    }
+  }
+
+  async updateChargeTime(soc) {
+    const settings = this.getSettings();
+    const batterySize = settings.battery_size || 'none';
+    const chargeTargetStr = settings.charge_target || '100';
+    const chargeTarget = parseInt(chargeTargetStr, 10);
+
+    const BATTERY_WH = {
+      'BQ618': 618,
+      'BQ814': 814,
+      'BQ983': 983,
+      'BQ1440': 1440
+    };
+
+    if (batterySize === 'none' || !BATTERY_WH[batterySize]) {
+      return;
+    }
+
+    const batteryWh = BATTERY_WH[batterySize];
+    const chargeMinutes = this.calculateChargeTime(soc, batteryWh, chargeTarget);
+
+    this.log(`[CHARGE] SOC: ${soc}%, Battery: ${batterySize} (${batteryWh}Wh), Target: ${chargeTarget}%, Result: ${chargeMinutes} min`);
+
+    if (this.hasCapability('stromer_charge_time')) {
+      await this.setCapabilityValue('stromer_charge_time', chargeMinutes).catch(this.error);
+    }
+
+    const chargeHours = Math.ceil(chargeMinutes / 60);
+    await this.homey.flow.getDeviceTriggerCard('charge_time_updated')
+      .trigger(this, { charge_minutes: chargeMinutes, charge_hours: chargeHours }, {})
+      .catch(() => {});
   }
   
   async checkAndResetBaselines(totalDistance) {
@@ -287,6 +341,9 @@ class StromerBikeDevice extends Homey.Device {
         });
       }
     }
+
+    const currentSoc = capabilities['measure_battery'] || 0;
+    await this.updateChargeTime(currentSoc);
 
     if (capabilities.alarm_theft && !oldTheftFlag) {
       await this.homey.flow.getDeviceTriggerCard('theft_activated')

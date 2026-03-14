@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.stromer.bike",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "platforms": [
@@ -124,6 +124,43 @@
           }
         ],
         "id": "bike_unlocked"
+      },
+      {
+        "title": {
+          "en": "Charge time calculated"
+        },
+        "titleFormatted": {
+          "en": "Charge time updated for [[device]]"
+        },
+        "hint": {
+          "en": "Triggers every time the charge time is recalculated (on each poll). Use the tokens to plan a charging schedule."
+        },
+        "tokens": [
+          {
+            "name": "charge_minutes",
+            "type": "number",
+            "title": {
+              "en": "Minutes to charge"
+            },
+            "example": 200
+          },
+          {
+            "name": "charge_hours",
+            "type": "number",
+            "title": {
+              "en": "Hours to charge (rounded up)"
+            },
+            "example": 4
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=stromer-bike"
+          }
+        ],
+        "id": "charge_time_updated"
       },
       {
         "title": {
@@ -493,6 +530,7 @@
       "capabilities": [
         "stromer_state_of_charge",
         "stromer_battery_health",
+        "stromer_charge_time",
         "stromer_trip_distance",
         "stromer_average_speed_trip",
         "stromer_motor_temp_c",
@@ -545,6 +583,9 @@
         },
         "stromer_location": {
           "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
+        },
+        "stromer_charge_time": {
+          "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
         },
         "alarm_theft": {
           "icon": "/drivers/stromer-bike/assets/icons/14-diefstal-alarm.png"
@@ -752,6 +793,74 @@
                 "en": "Bike Name"
               },
               "value": "-"
+            },
+            {
+              "id": "battery_size",
+              "type": "dropdown",
+              "label": {
+                "en": "Battery Size"
+              },
+              "hint": {
+                "en": "Select your Stromer battery model to enable charge time calculations"
+              },
+              "value": "none",
+              "values": [
+                {
+                  "id": "none",
+                  "label": {
+                    "en": "Not configured"
+                  }
+                },
+                {
+                  "id": "BQ618",
+                  "label": {
+                    "en": "BQ618 (618 Wh)"
+                  }
+                },
+                {
+                  "id": "BQ814",
+                  "label": {
+                    "en": "BQ814 (814 Wh)"
+                  }
+                },
+                {
+                  "id": "BQ983",
+                  "label": {
+                    "en": "BQ983 (983 Wh)"
+                  }
+                },
+                {
+                  "id": "BQ1440",
+                  "label": {
+                    "en": "BQ1440 (1440 Wh)"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "charge_target",
+              "type": "dropdown",
+              "label": {
+                "en": "Charge To"
+              },
+              "hint": {
+                "en": "Target charge level for the charge time calculation"
+              },
+              "value": "100",
+              "values": [
+                {
+                  "id": "80",
+                  "label": {
+                    "en": "80% (faster, better for battery health)"
+                  }
+                },
+                {
+                  "id": "100",
+                  "label": {
+                    "en": "100% (full charge)"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -879,6 +988,23 @@
       "insights": true,
       "chartType": "spline",
       "icon": "/drivers/stromer-bike/assets/icons/06-battery-temp.svg"
+    },
+    "stromer_charge_time": {
+      "type": "number",
+      "title": {
+        "en": "Estimated Charge Time"
+      },
+      "units": {
+        "en": "min"
+      },
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "min": 0,
+      "insights": true,
+      "chartType": "spline",
+      "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
     },
     "stromer_distance_avg_speed": {
       "type": "number",

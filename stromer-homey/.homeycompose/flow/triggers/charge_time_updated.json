@@ -1,0 +1,36 @@
+{
+  "title": {
+    "en": "Charge time calculated"
+  },
+  "titleFormatted": {
+    "en": "Charge time updated for [[device]]"
+  },
+  "hint": {
+    "en": "Triggers every time the charge time is recalculated (on each poll). Use the tokens to plan a charging schedule."
+  },
+  "tokens": [
+    {
+      "name": "charge_minutes",
+      "type": "number",
+      "title": {
+        "en": "Minutes to charge"
+      },
+      "example": 200
+    },
+    {
+      "name": "charge_hours",
+      "type": "number",
+      "title": {
+        "en": "Hours to charge (rounded up)"
+      },
+      "example": 4
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=stromer-bike"
+    }
+  ]
+}

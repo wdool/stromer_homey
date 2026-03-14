@@ -17,6 +17,8 @@ class StromerApp extends Homey.App {
   }
 
   registerFlowCards() {
+    this.homey.flow.getDeviceTriggerCard('charge_time_updated');
+
     this.homey.flow.getDeviceTriggerCard('battery_low')
       .registerRunListener(async (args, state) => {
         return args.threshold >= state.threshold;
