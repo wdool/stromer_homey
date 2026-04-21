@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.8] - 2026-03-18
+## [1.0.8] - 2026-04-18
 
 ### Added
 - **Estimated Charge Time capability** (`stromer_charge_time`) with timer icon, showing minutes to reach target charge level
