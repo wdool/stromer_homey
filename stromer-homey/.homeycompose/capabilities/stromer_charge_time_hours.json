@@ -1,0 +1,17 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Estimated Charge Time (h)"
+  },
+  "units": {
+    "en": "h"
+  },
+  "decimals": 1,
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "min": 0,
+  "insights": true,
+  "chartType": "spline",
+  "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
+}

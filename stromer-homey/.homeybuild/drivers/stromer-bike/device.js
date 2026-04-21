@@ -115,6 +115,11 @@ class StromerBikeDevice extends Homey.Device {
       await this.setCapabilityValue('stromer_charge_time', chargeMinutes).catch(this.error);
     }
 
+    const chargeHoursDecimal = Math.round((chargeMinutes / 60) * 10) / 10;
+    if (this.hasCapability('stromer_charge_time_hours')) {
+      await this.setCapabilityValue('stromer_charge_time_hours', chargeHoursDecimal).catch(this.error);
+    }
+
     const chargeHours = Math.ceil(chargeMinutes / 60);
     await this.homey.flow.getDeviceTriggerCard('charge_time_updated')
       .trigger(this, { charge_minutes: chargeMinutes, charge_hours: chargeHours }, {})

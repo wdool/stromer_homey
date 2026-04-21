@@ -223,7 +223,13 @@ class StromerAuthService {
         return;
       }
 
-      const driver = this.homey.drivers.getDriver('stromer-bike');
+      let driver;
+      try {
+        driver = this.homey.drivers.getDriver('stromer-bike');
+      } catch (e) {
+        this.log('Driver not yet initialized, skipping migration check (no devices to migrate)');
+        return;
+      }
       const devices = driver.getDevices();
       
       if (devices && devices.length > 0) {

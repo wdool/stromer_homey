@@ -12,6 +12,7 @@
     "stromer_state_of_charge",
     "stromer_battery_health",
     "stromer_charge_time",
+    "stromer_charge_time_hours",
     "stromer_trip_distance",
     "stromer_average_speed_trip",
     "stromer_motor_temp_c",
@@ -66,6 +67,9 @@
       "icon": "/drivers/stromer-bike/assets/icons/13-location.svg"
     },
     "stromer_charge_time": {
+      "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
+    },
+    "stromer_charge_time_hours": {
       "icon": "/drivers/stromer-bike/assets/icons/15-charge-time.svg"
     },
     "alarm_theft": {
