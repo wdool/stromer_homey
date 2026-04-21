@@ -11,7 +11,7 @@
     "en": "Stromer"
   },
   "description": {
-    "en": "Connect your Stromer e-bike to Homey"
+    "en": "Connect your Stromer e-bike to Homey (Pro and Self Hosted Server)"
   },
   "category": [
     "appliances"

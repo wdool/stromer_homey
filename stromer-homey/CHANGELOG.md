@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.8] - 2026-04-18
+## [1.0.8] - 2026-04-21
 
 ### Added
-- **Estimated Charge Time capability** (`stromer_charge_time`) with timer icon, showing minutes to reach target charge level
+- **Homey Self Hosted Server support** confirmed and documented
+- **Estimated Charge Time capability** (`stromer_charge_time`) with EV charging icon, showing minutes to reach target charge level
 - **Battery Size setting** (Bike Information): dropdown for BQ618 (618 Wh), BQ814 (814 Wh), BQ983 (983 Wh), BQ1440 (1440 Wh)
 - **Charge Target setting**: choose 80% (faster, battery-friendly) or 100% (full)
 - **New Flow trigger** `charge_time_updated` with two tokens:
