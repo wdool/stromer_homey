@@ -1,0 +1,5 @@
+{
+  "1.0.9": {
+    "en": "Adds Estimated Charge Time in both minutes and hours, Battery Size + Charge Target settings, a Flow trigger for energy-rate scheduling, and confirmed Homey Self Hosted Server support."
+  }
+}
