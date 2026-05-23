@@ -18,8 +18,23 @@ class StromerBikeDevice extends Homey.Device {
     this.statsInterval = 60 * 60 * 1000;
     
     this.lastResetCheck = null;
+    this.previousSoc = null;
+    this.wasRiding = false;
+    this.wasCharging = false;
+    this.maintenanceNotified = false;
 
     await this.setUnavailable('Connecting to Stromer...').catch(this.error);
+
+    // Ensure new capabilities exist (for upgrades from older versions)
+    const newCaps = ['stromer_bike_speed', 'stromer_assistance_level', 'stromer_atmospheric_pressure',
+      'stromer_firmware', 'stromer_year_distance', 'stromer_month_distance', 'stromer_week_distance',
+      'stromer_torque_sensitivity', 'stromer_recup_level', 'stromer_vin', 'stromer_charging',
+      'stromer_riding', 'stromer_distance_since_service'];
+    for (const cap of newCaps) {
+      if (!this.hasCapability(cap)) {
+        await this.addCapability(cap).catch(this.error);
+      }
+    }
 
     await this.updateBikeData();
 
@@ -31,6 +46,14 @@ class StromerBikeDevice extends Homey.Device {
 
     this.registerCapabilityListener('locked', async (value) => {
       return this.setLock(value);
+    });
+
+    this.registerCapabilityListener('stromer_torque_sensitivity', async (value) => {
+      return this.setSensorTuning('user_torque_sensitivity', value);
+    });
+
+    this.registerCapabilityListener('stromer_recup_level', async (value) => {
+      return this.setSensorTuning('recup_level_user_offset', value);
     });
   }
 
@@ -217,7 +240,7 @@ class StromerBikeDevice extends Homey.Device {
     try {
       const bikeId = this.getData().id;
       
-      const [status, position, bikeDetails] = await Promise.all([
+      const [status, position, bikeDetails, sensors, serviceInfo] = await Promise.all([
         this.authService.getBikeState(bikeId).catch(err => {
           this.error('Failed to get bike status:', err);
           return null;
@@ -228,6 +251,14 @@ class StromerBikeDevice extends Homey.Device {
         }),
         this.authService.getBikeDetails(bikeId).catch(err => {
           this.error('Failed to get bike details:', err);
+          return null;
+        }),
+        this.authService.getBikeSensors(bikeId).catch(err => {
+          this.error('Failed to get bike sensors:', err);
+          return null;
+        }),
+        this.authService.getServiceInfo(bikeId).catch(err => {
+          this.error('Failed to get service info:', err);
           return null;
         })
       ]);
@@ -252,6 +283,14 @@ class StromerBikeDevice extends Homey.Device {
 
       if (bikeDetails) {
         await this.updateBikeDetailsCapabilities(bikeDetails);
+      }
+
+      if (sensors) {
+        await this.updateSensorCapabilities(sensors);
+      }
+
+      if (serviceInfo) {
+        await this.updateServiceInfo(serviceInfo);
       }
 
       const wasActive = this.isActive;
@@ -336,7 +375,11 @@ class StromerBikeDevice extends Homey.Device {
       'stromer_avg_energy': status.average_energy_consumption || 0,
       'stromer_user_total_distance': userTotalDistance,
       'stromer_power_cycles': status.power_on_cycles || 0,
-      'stromer_total_energy_consumption': status.total_energy_consumption || 0
+      'stromer_total_energy_consumption': status.total_energy_consumption || 0,
+      'stromer_bike_speed': status.bike_speed || 0,
+      'stromer_assistance_level': status.assistance_level || 0,
+      'stromer_atmospheric_pressure': status.atmospheric_pressure || 0,
+      'stromer_firmware': status.suiversion || 'Unknown'
     }
 
     for (const [capability, value] of Object.entries(capabilities)) {
@@ -372,6 +415,75 @@ class StromerBikeDevice extends Homey.Device {
       await this.homey.flow.getDeviceTriggerCard('battery_health_low')
         .trigger(this, {}, { threshold: capabilities.stromer_battery_health })
         .catch(this.error);
+    }
+
+    // Period distances
+    const yearDistance = totalDistance - baselines.yearBaseline;
+    const monthDistance = totalDistance - baselines.monthBaseline;
+    const weekDistance = totalDistance - baselines.weekBaseline;
+    
+    if (this.hasCapability('stromer_year_distance')) {
+      await this.setCapabilityValue('stromer_year_distance', Math.max(0, yearDistance)).catch(this.error);
+    }
+    if (this.hasCapability('stromer_month_distance')) {
+      await this.setCapabilityValue('stromer_month_distance', Math.max(0, monthDistance)).catch(this.error);
+    }
+    if (this.hasCapability('stromer_week_distance')) {
+      await this.setCapabilityValue('stromer_week_distance', Math.max(0, weekDistance)).catch(this.error);
+    }
+
+    // Ride detection (feature 9)
+    const isRiding = !capabilities.locked && (status.bike_speed || 0) > 0;
+    if (this.hasCapability('stromer_riding')) {
+      await this.setCapabilityValue('stromer_riding', isRiding).catch(this.error);
+    }
+    if (isRiding && !this.wasRiding) {
+      await this.homey.flow.getDeviceTriggerCard('ride_started')
+        .trigger(this, {}, {}).catch(() => {});
+    } else if (!isRiding && this.wasRiding) {
+      await this.homey.flow.getDeviceTriggerCard('ride_ended')
+        .trigger(this, {}, {}).catch(() => {});
+    }
+    this.wasRiding = isRiding;
+
+    // Charge detection (feature 11)
+    const currentSocValue = capabilities['measure_battery'] || 0;
+    const isCharging = this.previousSoc !== null && currentSocValue > this.previousSoc && capabilities.locked;
+    if (this.hasCapability('stromer_charging')) {
+      await this.setCapabilityValue('stromer_charging', isCharging).catch(this.error);
+    }
+    if (isCharging && !this.wasCharging) {
+      await this.homey.flow.getDeviceTriggerCard('charging_started')
+        .trigger(this, {}, {}).catch(() => {});
+    } else if (!isCharging && this.wasCharging) {
+      await this.homey.flow.getDeviceTriggerCard('charging_stopped')
+        .trigger(this, {}, {}).catch(() => {});
+    }
+    this.wasCharging = isCharging;
+
+    // Charge target reached trigger
+    if (this.previousSoc !== null && currentSocValue > this.previousSoc) {
+      await this.homey.flow.getDeviceTriggerCard('charge_target_reached')
+        .trigger(this, {}, { soc: currentSocValue }).catch(() => {});
+    }
+    this.previousSoc = currentSocValue;
+
+    // Maintenance check (feature 10)
+    const maintenanceSettings = this.getSettings();
+    const lastServiceDist = maintenanceSettings.last_service_distance || 0;
+    const maintenanceInterval = maintenanceSettings.maintenance_interval || 2000;
+    const distanceSinceService = Math.max(0, totalDistance - lastServiceDist);
+    
+    if (this.hasCapability('stromer_distance_since_service')) {
+      await this.setCapabilityValue('stromer_distance_since_service', Math.round(distanceSinceService)).catch(this.error);
+    }
+    
+    if (distanceSinceService >= maintenanceInterval && !this.maintenanceNotified) {
+      this.maintenanceNotified = true;
+      await this.homey.flow.getDeviceTriggerCard('maintenance_due')
+        .trigger(this, {}, {}).catch(() => {});
+    } else if (distanceSinceService < maintenanceInterval) {
+      this.maintenanceNotified = false;
     }
   }
 
@@ -432,6 +544,56 @@ class StromerBikeDevice extends Homey.Device {
     } catch (error) {
       this.error('Failed to reset trip distance:', error);
       throw new Error('Failed to reset trip distance');
+    }
+  }
+
+  async updateSensorCapabilities(sensors) {
+    if (sensors.user_torque_sensitivity !== undefined && this.hasCapability('stromer_torque_sensitivity')) {
+      await this.setCapabilityValue('stromer_torque_sensitivity', sensors.user_torque_sensitivity).catch(this.error);
+    }
+    if (sensors.recup_level_user_offset !== undefined && this.hasCapability('stromer_recup_level')) {
+      await this.setCapabilityValue('stromer_recup_level', sensors.recup_level_user_offset).catch(this.error);
+    }
+  }
+
+  async updateServiceInfo(serviceInfo) {
+    if (serviceInfo.vin && this.hasCapability('stromer_vin')) {
+      await this.setCapabilityValue('stromer_vin', serviceInfo.vin).catch(this.error);
+    }
+    // Store serial and VIN in device settings for reference
+    const updates = {};
+    if (serviceInfo.vin) updates.bike_vin = serviceInfo.vin;
+    if (serviceInfo.serial) updates.bike_serial = serviceInfo.serial;
+    if (Object.keys(updates).length > 0) {
+      await this.setSettings(updates).catch(this.error);
+    }
+  }
+
+  async setSensorTuning(param, value) {
+    try {
+      const bikeId = this.getData().id;
+      await this.authService.setBikeSensors(bikeId, { [param]: value });
+      await this.updateBikeData();
+      return true;
+    } catch (error) {
+      this.error('Failed to set sensor tuning:', error);
+      throw new Error(`Failed to set ${param}`);
+    }
+  }
+
+  async setMotorTuning(speed, torque, agility) {
+    try {
+      const bikeId = this.getData().id;
+      await this.authService.setBikeMotorTuning(bikeId, {
+        tuning_speed: speed,
+        tuning_torque: torque,
+        tuning_agility: agility
+      });
+      await this.updateBikeData();
+      return true;
+    } catch (error) {
+      this.error('Failed to set motor tuning:', error);
+      throw new Error('Failed to set motor tuning');
     }
   }
 }
