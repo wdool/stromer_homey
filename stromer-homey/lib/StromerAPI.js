@@ -2,18 +2,28 @@
 
 const fetch = require('node-fetch');
 
+// Default v4 client_id extracted from the Stromer OMNI Android app.
+// This is the same for all users — it's the app's OAuth credential, not per-user.
+// If Stromer changes this in a future app update, users can override it in App Settings.
+const DEFAULT_CLIENT_ID = '4P3VE9rBYdueKQioWb7nv7RJDU8EQsn2wiQaNqhG';
+
 class StromerAPI {
   constructor(log) {
     this.log = log || console.log;
     this.error = log ? log.bind(null, '[ERROR]') : console.error;
     
     this.baseUrl = 'https://api3.stromer-portal.ch';
+    this.authUrl = 'https://stromer-portal.ch';
     this.tokens = null;
     this.clientId = null;
     this.clientSecret = null;
     this.username = null;
     this.password = null;
     this.lastDebugLog = [];
+  }
+
+  static get DEFAULT_CLIENT_ID() {
+    return DEFAULT_CLIENT_ID;
   }
 
   debugLog(message) {
@@ -40,11 +50,11 @@ class StromerAPI {
     
     const apiVersion = clientSecret ? 'v3' : 'v4';
     const loginUrl = apiVersion === 'v4'
-      ? `${this.baseUrl}/mobile/v4/login/`
+      ? `${this.authUrl}/mobile/v4/login/`
       : `${this.baseUrl}/users/login/`;
     
     const tokenUrl = apiVersion === 'v4'
-      ? `${this.baseUrl}/mobile/v4/o/token/`
+      ? `${this.authUrl}/mobile/v4/o/token/`
       : `${this.baseUrl}/o/token/`;
 
     this.debugLog('=== STROMER AUTHENTICATION DEBUG LOG ===');
@@ -190,9 +200,10 @@ class StromerAPI {
       this.debugLog('');
 
       this.debugLog('STEP 3: Follow redirect to get authorization code');
+      const authBase = apiVersion === 'v4' ? this.authUrl : this.baseUrl;
       const authorizeUrl = nextLocation.startsWith('http') 
         ? nextLocation 
-        : `${this.baseUrl}${nextLocation}`;
+        : `${authBase}${nextLocation}`;
       this.debugLog(`  Request: GET ${authorizeUrl.substring(0, 80)}...`);
 
       const updatedCookieString = Object.entries(cookieJar).map(([k, v]) => `${k}=${v}`).join('; ');
@@ -293,7 +304,7 @@ class StromerAPI {
 
     const apiVersion = this.clientSecret ? 'v3' : 'v4';
     const tokenUrl = apiVersion === 'v4'
-      ? `${this.baseUrl}/mobile/v4/o/token/`
+      ? `${this.authUrl}/mobile/v4/o/token/`
       : `${this.baseUrl}/o/token/`;
 
     try {
@@ -550,13 +561,53 @@ class StromerAPI {
     }
   }
 
-  async getBikeDetails(bikeId) {
+  async getBikeSensors(bikeId) {
     const apiVersion = this.clientSecret ? 'v2' : 'v4.1';
     try {
-      const response = await this.apiCall(`/rapi/mobile/${apiVersion}/bike/${bikeId}/`);
+      const response = await this.apiCall(`/rapi/mobile/${apiVersion}/bike/${bikeId}/sensors/`);
       return response?.data?.[0] || response;
     } catch (error) {
-      this.error(`[StromerAPI] Failed to get bike details:`, error.message);
+      this.error(`[StromerAPI] Failed to get bike sensors:`, error.message);
+      return null;
+    }
+  }
+
+  async setBikeSensors(bikeId, sensors) {
+    const apiVersion = this.clientSecret ? 'v2' : 'v4.1';
+    return await this.apiCall(
+      `/rapi/mobile/${apiVersion}/bike/${bikeId}/sensors/`,
+      'POST',
+      sensors
+    );
+  }
+
+  async getBikeMotorTuning(bikeId) {
+    const apiVersion = this.clientSecret ? 'v2' : 'v4.1';
+    try {
+      const response = await this.apiCall(`/rapi/mobile/${apiVersion}/bike/${bikeId}/motor_tuning/`);
+      return response?.data?.[0] || response;
+    } catch (error) {
+      this.error(`[StromerAPI] Failed to get motor tuning:`, error.message);
+      return null;
+    }
+  }
+
+  async setBikeMotorTuning(bikeId, tuning) {
+    const apiVersion = this.clientSecret ? 'v2' : 'v4.1';
+    return await this.apiCall(
+      `/rapi/mobile/${apiVersion}/bike/${bikeId}/motor_tuning/`,
+      'POST',
+      tuning
+    );
+  }
+
+  async getServiceInfo(bikeId) {
+    const apiVersion = this.clientSecret ? 'v2' : 'v4.1';
+    try {
+      const response = await this.apiCall(`/rapi/mobile/${apiVersion}/bike/${bikeId}/service_info/`);
+      return response?.data?.[0] || response;
+    } catch (error) {
+      this.error(`[StromerAPI] Failed to get service info:`, error.message);
       return null;
     }
   }
